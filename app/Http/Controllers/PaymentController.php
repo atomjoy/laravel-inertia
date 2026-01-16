@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Payment;
 use App\Http\Requests\StorePaymentRequest;
 use App\Http\Requests\UpdatePaymentRequest;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 
 class PaymentController extends Controller
@@ -20,8 +22,16 @@ class PaymentController extends Controller
 	/**
 	 * Display a listing of the resource.
 	 */
-	public function index()
+	public function index(Request $request)
 	{
+		$validator = Validator::make($request->all(), [
+			"amount"    => "sometimes|array|min:1",
+			"amount.*"  => "sometimes|numeric|distinct|min:1",
+			"status"    => "sometimes|array|min:1",
+			"status.*"  => "sometimes|string|distinct|min:1",
+			// 'sku' => 'required|string|regex:​​/^[a-zA-Z0-9]+$/',
+		]);
+
 		$filters = [];
 		$perPage = request()->integer('per_page', 10);
 		$email = request()->input('email', null);
@@ -61,16 +71,18 @@ class PaymentController extends Controller
 		if (request()->wantsJson()) {
 			return response()->json([
 				'payload' => $payload,
-				'filter' => $filters,
 				'slider_min' => $slider_min ?? 0,
 				'slider_max' => $slider_max ?? 10000,
+				'filter' => $filters,
+				'filter_errors' => $validator->fails() ? $validator->errors() : null,
 			], 200);
 		} else {
 			return Inertia::render('Payments/Index', [
 				'data' => $payload,
-				'filter' => $filters,
 				'slider_min' => $slider_min ?? 0,
 				'slider_max' => $slider_max ?? 10000,
+				'filter' => $filters,
+				'filter_errors' => $validator->fails() ? $validator->errors() : null,
 				// 'json' => new JsonResponse(['key' => 'value']),
 				// 'users' => User::all()->map(fn($user) => [
 				//     'id' => $user->id,

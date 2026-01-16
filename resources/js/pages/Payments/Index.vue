@@ -17,9 +17,10 @@ import { Slider } from '@/components/ui/slider'
 
 const props = defineProps({
 	data: Object,
-	filter: Array,
 	slider_min: Number,
 	slider_max: Number,
+	filter: Array,
+	filter_errors: Object,
 });
 
 const filter_toolbar = [filter_status];
@@ -186,7 +187,7 @@ watch(props, (n) => {
 
 <template>
 	<div class="full p-10">
-		<div class="rounded-md border mb-4 p-4" v-if="sorting">{{ sorting }} {{ rowSelection }} {{ columnFilters }}</div>
+		<div class="rounded-md border mb-4 p-4" v-if="sorting">{{ sorting }} {{ rowSelection }} {{ columnFilters }} {{ props.errors }}</div>
 
 		<div class="flex items-center my-4">
 			<Input
