@@ -6,18 +6,18 @@ import { filter_status } from '@/components/payments/types';
 import { columns } from '@/components/payments/columns';
 import { valueUpdater } from '@/components/ui/table/utils';
 import { router } from '@inertiajs/vue3';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { ChevronDown } from 'lucide-vue-next';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { ColumnFiltersState, ExpandedState, FlexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, RowSelectionState, SortingState, useVueTable, VisibilityState, getFacetedMinMaxValues, getFacetedRowModel, getFacetedUniqueValues} from '@tanstack/vue-table';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Field, FieldDescription, FieldTitle} from '@/components/ui/field'
 import { Slider } from '@/components/ui/slider'
 
 const props = defineProps({
 	data: Object,
+	filter: Array,
 	slider_min: Number,
 	slider_max: Number,
 });
@@ -179,8 +179,8 @@ const table = useVueTable({
 	},
 });
 
-onMounted(() => {
-	console.log("Props", props);
+watch(props, (n) => {
+	console.log("Props", n);
 })
 </script>
 

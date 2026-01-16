@@ -15,7 +15,7 @@ class PaymentController extends Controller
 	 *
 	 * @var array
 	 */
-	protected $orderby = ['id', 'email', 'status', 'created_at'];
+	protected $orderby = ['id', 'email', 'amount', 'status', 'created_at'];
 
 	/**
 	 * Display a listing of the resource.
@@ -26,49 +26,51 @@ class PaymentController extends Controller
 		$perPage = request()->integer('per_page', 10);
 		$email = request()->input('email', null);
 		$status = request()->input('status', null);
+		$amount = request()->input('amount', null);
 		$sortField = request()->input('sort_field', 'id');
 		$sortDirection = request()->input('sort_direction', 'desc');
 		$sortDirection == 'desc' ? $sortDirection = 'desc' : $sortDirection = 'asc';
-		$amount = request()->input('amount', 0);
 
 		if (!empty($status)) {
-			$filters[] = [
-				'id' => 'status',
-				'value' => $status
-			];
+			$filters[] = ['id' => 'status', 'value' => $status];
+			$filters[] = ['id' => 'amount', 'value' => $amount];
+			$filters[] = ['id' => 'email', 'value' => $email];
 		}
 
 		$slider_min = Payment::min("amount");
 		$slider_max = Payment::max("amount");
 
-		$payload =  Payment::query()->when($status, function ($query, $status) {
-			if (is_array($status) && !empty($status)) {
-				$query->whereIn('status', $status);
-			}
-		})->when($email, function ($query, $email) {
-			if (!empty($email)) {
-				$query->where('email', 'LIKE', '%' . $email . '%');
-			}
-		})->when($amount, function ($query, $amount) {
-			if (!empty($amount)) {
-				$query->whereBetween('amount', $amount);
-				// $min = (int) $amount[0] ?? 0;
-				// $max = (int) $amount[1] ?? 5000;
-				// $query->where('amount', '>=', $min)->where('amount', '<=', $max);
-			}
-		})->orderBy($sortField, $sortDirection)->paginate(perPage: $perPage);
+		$payload =  Payment::query()
+			->when($status, function ($query, $status) {
+				if (is_array($status) && !empty($status)) {
+					$query->whereIn('status', $status);
+				}
+			})->when($email, function ($query, $email) {
+				if (!empty($email)) {
+					$query->where('email', 'LIKE', '%' . $email . '%');
+				}
+			})->when($amount, function ($query, $amount) {
+				if (!empty($amount)) {
+					$query->whereBetween('amount', $amount);
+					// $min = (int) $amount[0] ?? 0;
+					// $max = (int) $amount[1] ?? 5000;
+					// $query->where('amount', '>=', $min)->where('amount', '<=', $max);
+				}
+			})->orderBy($sortField, $sortDirection)->paginate(perPage: $perPage);
 
 		if (request()->wantsJson()) {
 			return response()->json([
 				'payload' => $payload,
 				'filter' => $filters,
+				'slider_min' => $slider_min ?? 0,
+				'slider_max' => $slider_max ?? 10000,
 			], 200);
 		} else {
 			return Inertia::render('Payments/Index', [
 				'data' => $payload,
 				'filter' => $filters,
 				'slider_min' => $slider_min ?? 0,
-				'slider_max' => $slider_max ?? 5000,
+				'slider_max' => $slider_max ?? 10000,
 				// 'json' => new JsonResponse(['key' => 'value']),
 				// 'users' => User::all()->map(fn($user) => [
 				//     'id' => $user->id,
