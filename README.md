@@ -1,6 +1,6 @@
 # Laravel 12 Inertia Vue
 
-How to create shadcn DataTable with server side pagination (filters, sorting, search).
+How to create shadcn DataTable with server side pagination (filters, sorting, search, slider).
 
 ## Install
 
