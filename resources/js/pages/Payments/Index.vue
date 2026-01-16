@@ -170,10 +170,6 @@ const table = useVueTable({
 		);
 	},
 });
-
-function copy(id: string) {
-	navigator.clipboard.writeText(id);
-}
 </script>
 
 <template>
