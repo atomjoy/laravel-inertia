@@ -1,21 +1,29 @@
 <script setup lang="ts" generic="TData, TValue">
-import type { PaginationState, TableState } from '@tanstack/vue-table';
 import DataTablePagination from '@/components/payments/DataTableCustomPagination.vue';
 import Filter from '@/components/payments/Filter.vue';
-import { filter_status, Payment } from '@/components/payments/types';
+import type { PaginationState } from '@tanstack/vue-table';
+import { filter_status } from '@/components/payments/types';
 import { columns } from '@/components/payments/columns';
 import { valueUpdater } from '@/components/ui/table/utils';
 import { router } from '@inertiajs/vue3';
-import { ref, watch } from 'vue';
+import { ref, onMounted } from 'vue';
 import { ChevronDown } from 'lucide-vue-next';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { ColumnFiltersState, ExpandedState, FlexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, RowSelectionState, SortingState, useVueTable, VisibilityState, getFacetedMinMaxValues, getFacetedRowModel, getFacetedUniqueValues} from '@tanstack/vue-table';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Field, FieldDescription, FieldTitle} from '@/components/ui/field'
+import { Slider } from '@/components/ui/slider'
 
-const props = defineProps({ data: Object });
+const props = defineProps({
+	data: Object,
+	slider_min: Number,
+	slider_max: Number,
+});
+
 const filter_toolbar = [filter_status];
+const slider = ref([0,props.slider_max ?? 1000])
 const expanded = ref<ExpandedState>({});
 const rowSelection = ref<RowSelectionState>({});
 const columnVisibility = ref<VisibilityState>({});
@@ -115,7 +123,7 @@ const table = useVueTable({
 		table.resetPageIndex()
 		table.resetPageSize()
 
-		console.log(filters, table.getRowCount(), table.getPageCount(), props.data?.last_page);
+		// console.log(filters, table.getRowCount(), table.getPageCount(), props.data?.last_page);
 	},
 	onSortingChange: (updaterOrValue) => {
 		sorting.value = typeof updaterOrValue === 'function' ? updaterOrValue(sorting.value) : updaterOrValue;
@@ -170,6 +178,10 @@ const table = useVueTable({
 		);
 	},
 });
+
+onMounted(() => {
+	console.log("Props", props);
+})
 </script>
 
 <template>
@@ -178,13 +190,26 @@ const table = useVueTable({
 
 		<div class="flex items-center my-4">
 			<Input
-				class="h-9 max-w-sm" placeholder="Filter emails..."
+				class="h-9 max-w-50 mr-2" placeholder="Filter emails"
 				:model-value="table.getColumn('email')?.getFilterValue() as string"
-				@update:model-value=" table.getColumn('email')?.setFilterValue($event)"
+				@update:model-value="table.getColumn('email')?.setFilterValue($event)"
 			/>
 
-			<div v-for="filter in filter_toolbar" :key="filter.title">
+			<div v-for="filter in filter_toolbar" :key="filter.title" class="mr-2">
 				<Filter :column="table.getColumn(filter.column)" :title="filter.title" :options="filter.data"></Filter>
+			</div>
+
+			<div class="w-full max-w-60 mx-2">
+				<div class="text-xs">Price range ($<span class="font-medium tabular-nums">{{ slider[0] }}</span> - <span class="font-medium tabular-nums">{{ slider[1] }}</span>).</div>
+				<Slider
+					v-model="slider"
+					@update:model-value="table.getColumn('amount')?.setFilterValue($event)"
+					:min="slider_min"
+					:max="slider_max"
+					:step="10"
+					class="mt-2 w-full mb-4"
+					aria-label="Price Range"
+				/>
 			</div>
 
 			<DropdownMenu>

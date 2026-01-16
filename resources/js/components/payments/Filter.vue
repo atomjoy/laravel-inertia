@@ -1,7 +1,44 @@
+<script setup>
+import { computed } from 'vue'
+import { CheckIcon, CirclePlus } from 'lucide-vue-next'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator } from '@/components/ui/command'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Separator } from '@/components/ui/separator'
+import { cn } from '@/lib/utils'
+
+const props = defineProps({
+    column: { type: Object, default: null },
+    title: { type: String, default: '' },
+    options: {
+        type: Array,
+        required: true,
+        validator: options => options.every(option =>
+            option.label &&
+            option.value &&
+            (!option.icon || typeof option.icon === 'object')
+        )
+    }
+})
+
+const facets = computed(() => props.column?.getFacetedUniqueValues())
+const selectedValues = computed(() => new Set(props.column?.getFilterValue()))
+
+const filterFunction = (val, term) => {
+    if (Array.isArray(val) && typeof val[0] === 'object') {
+        return val.filter(item =>
+            item.label.toLowerCase().includes(term.toLowerCase())
+        )
+    }
+    return val
+}
+</script>
+
 <template>
     <Popover>
         <PopoverTrigger as-child>
-            <Button variant="outline" size="sm" class="h-9 ml-2.5 border-dashed">
+            <Button variant="outline" size="sm" class="h-9 ml-2.5">
                 <CirclePlus class="mr-2 h-4 w-4" />
                 {{ title }}
                 <template v-if="selectedValues.size > 0">
@@ -73,44 +110,4 @@
         </PopoverContent>
     </Popover>
 </template>
-<script setup>
-import { computed } from 'vue'
-import { CheckIcon, CirclePlus } from 'lucide-vue-next'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator } from '@/components/ui/command'
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from '@/components/ui/popover'
-import { Separator } from '@/components/ui/separator'
-import { cn } from '@/lib/utils'
 
-const props = defineProps({
-    column: { type: Object, default: null },
-    title: { type: String, default: '' },
-    options: {
-        type: Array,
-        required: true,
-        validator: options => options.every(option =>
-            option.label &&
-            option.value &&
-            (!option.icon || typeof option.icon === 'object')
-        )
-    }
-})
-
-const facets = computed(() => props.column?.getFacetedUniqueValues())
-const selectedValues = computed(() => new Set(props.column?.getFilterValue()))
-
-const filterFunction = (val, term) => {
-    if (Array.isArray(val) && typeof val[0] === 'object') {
-        return val.filter(item =>
-            item.label.toLowerCase().includes(term.toLowerCase())
-        )
-    }
-    return val
-}
-
-</script>
