@@ -173,12 +173,11 @@ const table = useVueTable({
 </script>
 
 <template>
-	<div class="space-y-4">
-		<!-- <div class="rounded-md border" v-if="sorting">{{ sorting }} {{ pagination }} {{ rowSelection }}</div> -->
-		<div class="rounded-md border">
-			<div class="rounded-md border" v-if="sorting">{{ sorting }} {{ rowSelection }} {{ columnFilters }}</div>
+	<div class="full p-10">
+		<div class="rounded-md border mb-4 p-4" v-if="sorting">{{ sorting }} {{ rowSelection }} {{ columnFilters }}</div>
 
-			<div class="flex items-center py-4">
+		<div class="rounded-md border">
+			<div class="flex items-center p-4">
 				<Input
 					class="h-9 max-w-sm" placeholder="Filter emails..."
 					:model-value="table.getColumn('email')?.getFilterValue() as string"

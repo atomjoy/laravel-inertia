@@ -30,7 +30,7 @@ const pageSizes = [5, 10, 15, 25, 50];
 </script>
 
 <template>
-	<div class="flex items-center justify-between">
+	<div class="flex items-center justify-between mt-4">
 		<div class="flex-1 text-left text-sm text-muted-foreground">
 			{{ table.getFilteredSelectedRowModel().rows.length }} of
 			{{ table.getFilteredRowModel().rows.length }} row(s) selected.
