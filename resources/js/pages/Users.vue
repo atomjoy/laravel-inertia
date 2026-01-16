@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import { columns } from '@/components/payments/columns';
+import AppLayout from '@/layouts/AppLayout.vue';
 import DataTable from '@/components/payments/DataTable.vue';
+import { columns } from '@/components/payments/columns';
 import { payments, type Payment } from '@/components/payments/types';
 import { Button } from '@/components/ui/button';
-import AppLayout from '@/layouts/AppLayout.vue';
 import { users } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link } from '@inertiajs/vue3';
 import { PlusCircle } from 'lucide-vue-next';
 import { onMounted, ref } from 'vue';
+import axios from 'axios'
 
 const breadcrumbs: BreadcrumbItem[] = [
 	{
@@ -21,7 +22,12 @@ const data = ref<Payment[]>([]);
 
 // Fetch data from your API here.
 async function getData(): Promise<Payment[]> {
+	// Rows from array
 	return payments;
+
+	// Load all rows from server at once
+	// let res = await axios.get('payments')
+	// return res.data.payload.data
 }
 
 onMounted(async () => {

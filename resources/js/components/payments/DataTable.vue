@@ -48,7 +48,8 @@ const table = useVueTable({
 	},
 	initialState: {
 		pagination: {
-			pageSize: 5
+			pageIndex: 0,
+			pageSize: 10
 		}
 	},
 	// @ts-ignore

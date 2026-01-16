@@ -1,14 +1,21 @@
 <script setup lang="ts" generic="TData, TValue">
-import DataTablePagination from '@/components/payments/DataTablePagination.vue';
+import type { PaginationState, TableState } from '@tanstack/vue-table';
+import DataTablePagination from '@/components/payments/DataTableCustomPagination.vue';
+import Filter from '@/components/payments/Filter.vue';
+import { filter_status, Payment } from '@/components/payments/types';
 import { columns } from '@/components/payments/columns';
 import { valueUpdater } from '@/components/ui/table/utils';
 import { router } from '@inertiajs/vue3';
-import type { PaginationState } from '@tanstack/vue-table';
-import { ref } from 'vue';
-import { ColumnFiltersState, ExpandedState, FlexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, RowSelectionState, SortingState, useVueTable, VisibilityState } from '@tanstack/vue-table';
+import { ref, watch } from 'vue';
+import { ChevronDown } from 'lucide-vue-next';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { ColumnFiltersState, ExpandedState, FlexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, RowSelectionState, SortingState, useVueTable, VisibilityState, getFacetedMinMaxValues, getFacetedRowModel, getFacetedUniqueValues} from '@tanstack/vue-table';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 const props = defineProps({ data: Object });
+const filter_toolbar = [filter_status];
 const expanded = ref<ExpandedState>({});
 const rowSelection = ref<RowSelectionState>({});
 const columnVisibility = ref<VisibilityState>({});
@@ -19,16 +26,29 @@ const sorting = ref<SortingState>([
 		desc: true, // sort by age in descending order by default
 	},
 ]);
-
 const pagination = ref<PaginationState>({
-	pageIndex: 0,
-	pageSize: 5,
+	pageIndex: props.data?.current_page - 1,
+  	pageSize: props.data?.per_page,
 });
 
 // Update table state after on change events
 // https://tanstack.com/table/latest/docs/framework/vue/guide/table-state
 // https://tanstack.com/table/latest/docs/guide/pagination#should-you-use-client-side-pagination
 const table = useVueTable({
+	manualPagination: true,
+	manualSorting: true,
+	manualFiltering: true,
+	enableRowSelection: true,
+	rowCount: props.data?.total ?? 0,
+	pageCount: props.data?.last_page ?? 1,
+	// enableRowSelection: row => row.original.age > 18, //only enable row selection for adults
+	// enableMultiRowSelection: false, //only allow a single row to be selected at once
+	initialState: {
+		pagination: {
+			pageIndex: props.data?.current_page - 1,
+			pageSize: props.data?.per_page,
+		}
+	},
 	get data() {
 		return props?.data?.data;
 	},
@@ -36,14 +56,14 @@ const table = useVueTable({
 		return columns;
 	},
 	state: {
+		get pagination() {
+			return pagination.value;
+		},
 		get sorting() {
 			return sorting.value;
 		},
 		get rowSelection() {
 			return rowSelection.value;
-		},
-		get pagination() {
-			return pagination.value;
 		},
 		get columnFilters() {
 			return columnFilters.value;
@@ -53,20 +73,31 @@ const table = useVueTable({
 		},
 		get expanded() {
 			return expanded.value;
-		},
+		}
 	},
 	getRowId: (row) => row.id,
-	getPaginationRowModel: getPaginationRowModel(),
 	getCoreRowModel: getCoreRowModel(),
-	getFilteredRowModel: getFilteredRowModel(),
 	getSortedRowModel: getSortedRowModel(),
-	onSortingChange: (updaterOrValue) => valueUpdater(updaterOrValue, sorting),
-	onColumnFiltersChange: (updaterOrValue) => valueUpdater(updaterOrValue, columnFilters),
+	getFilteredRowModel: getFilteredRowModel(),
+	getFacetedRowModel: getFacetedRowModel(),
+  	getFacetedUniqueValues: getFacetedUniqueValues(),
+  	getFacetedMinMaxValues: getFacetedMinMaxValues(),
+	// getPaginationRowModel: getPaginationRowModel(),
 	onColumnVisibilityChange: (updaterOrValue) => valueUpdater(updaterOrValue, columnVisibility),
 	onRowSelectionChange: (updaterOrValue) => valueUpdater(updaterOrValue, rowSelection),
 	onExpandedChange: (updaterOrValue) => valueUpdater(updaterOrValue, expanded),
-	onPaginationChange: (updaterOrValue) => {
-		pagination.value = typeof updaterOrValue === 'function' ? updaterOrValue(pagination.value) : updaterOrValue;
+	onColumnFiltersChange: (updaterOrValue) => {
+		columnFilters.value = typeof updaterOrValue === 'function' ? updaterOrValue(columnFilters.value) : updaterOrValue;
+
+		// Filters
+		let filters = {};
+		if (columnFilters.value) {
+			filters = columnFilters.value.reduce((acc, filter) => {
+				// @ts-ignore
+        		acc[filter.id] = filter.value
+        		return acc
+      		}, {})
+		}
 
 		// Update backend here
 		router.get(
@@ -76,17 +107,68 @@ const table = useVueTable({
 				per_page: pagination.value.pageSize,
 				sort_field: sorting.value[0]?.id,
 				sort_direction: sorting.value.length == 0 ? undefined : sorting.value[0]?.desc ? 'desc' : 'asc',
+				...filters,
+			},
+			{ preserveState: true, preserveScroll: true },
+		);
+
+		table.resetPageIndex()
+		table.resetPageSize()
+
+		console.log(filters, table.getRowCount(), table.getPageCount(), props.data?.last_page);
+	},
+	onSortingChange: (updaterOrValue) => {
+		sorting.value = typeof updaterOrValue === 'function' ? updaterOrValue(sorting.value) : updaterOrValue;
+
+		// Filters
+		let filters = {};
+		if (columnFilters.value) {
+			filters = columnFilters.value.reduce((acc, filter) => {
+				// @ts-ignore
+        		acc[filter.id] = filter.value
+        		return acc
+      		}, {})
+		}
+
+		// Update backend here
+		router.get(
+			'payments',
+			{
+				page: pagination.value.pageIndex + 1,
+				per_page: pagination.value.pageSize,
+				sort_field: sorting.value[0]?.id,
+				sort_direction: sorting.value.length == 0 ? undefined : sorting.value[0]?.desc ? 'desc' : 'asc',
+				...filters,
 			},
 			{ preserveState: true, preserveScroll: true },
 		);
 	},
-	rowCount: props.data?.total ?? 0, // rowCount
-	manualPagination: true,
-	manualSorting: true,
-	manualFiltering: true,
-	enableRowSelection: true,
-	// enableRowSelection: row => row.original.age > 18, //only enable row selection for adults
-	// enableMultiRowSelection: false, //only allow a single row to be selected at once
+	onPaginationChange: (updaterOrValue) => {
+		pagination.value = typeof updaterOrValue === 'function' ? updaterOrValue(pagination.value) : updaterOrValue;
+
+		// Filters
+		let filters = {};
+		if (columnFilters.value) {
+			filters = columnFilters.value.reduce((acc, filter) => {
+				// @ts-ignore
+        		acc[filter.id] = filter.value
+        		return acc
+      		}, {})
+		}
+
+		// Update backend here
+		router.get(
+			'payments',
+			{
+				page: pagination.value.pageIndex + 1,
+				per_page: pagination.value.pageSize,
+				sort_field: sorting.value[0]?.id,
+				sort_direction: sorting.value.length == 0 ? undefined : sorting.value[0]?.desc ? 'desc' : 'asc',
+				...filters,
+			},
+			{ preserveState: true, preserveScroll: true },
+		);
+	},
 });
 
 function copy(id: string) {
@@ -98,6 +180,42 @@ function copy(id: string) {
 	<div class="space-y-4">
 		<!-- <div class="rounded-md border" v-if="sorting">{{ sorting }} {{ pagination }} {{ rowSelection }}</div> -->
 		<div class="rounded-md border">
+			<div class="rounded-md border" v-if="sorting">{{ sorting }} {{ rowSelection }} {{ columnFilters }}</div>
+
+			<div class="flex items-center py-4">
+				<Input
+					class="h-9 max-w-sm" placeholder="Filter emails..."
+					:model-value="table.getColumn('email')?.getFilterValue() as string"
+                	@update:model-value=" table.getColumn('email')?.setFilterValue($event)"
+				/>
+
+				<div v-for="filter in filter_toolbar" :key="filter.title">
+					<Filter :column="table.getColumn(filter.column)" :title="filter.title" :options="filter.data"></Filter>
+				</div>
+
+				<DropdownMenu>
+					<DropdownMenuTrigger as-child>
+						<Button variant="outline" class="ml-auto"> Columns <ChevronDown class="ml-2 h-4 w-4" /> </Button>
+					</DropdownMenuTrigger>
+
+					<DropdownMenuContent align="end">
+						<DropdownMenuCheckboxItem
+							v-for="column in table.getAllColumns().filter((column) => column.getCanHide())"
+							:key="column.id"
+							class="capitalize"
+							:modelValue="column.getIsVisible()"
+							@update:modelValue="
+								(value: any) => {
+									column.toggleVisibility(!!value);
+								}
+							"
+						>
+							{{ column.id }}
+						</DropdownMenuCheckboxItem>
+					</DropdownMenuContent>
+				</DropdownMenu>
+			</div>
+
 			<Table>
 				<TableHeader>
 					<TableRow v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
@@ -124,7 +242,7 @@ function copy(id: string) {
 			</Table>
 		</div>
 
-		<DataTablePagination :table="table" />
+		<DataTablePagination :table="table" :last_page="props.data?.last_page ?? 0" />
 	</div>
 </template>
 

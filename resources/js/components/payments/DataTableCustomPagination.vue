@@ -17,9 +17,14 @@ import {
 	SelectValue,
 } from '@/components/ui/select';
 
-interface DataTablePaginationProps {
+interface LastPage {
+	last_page: number
+}
+
+interface DataTablePaginationProps extends LastPage {
 	table: Table<TData>
 }
+
 const props = defineProps<DataTablePaginationProps>();
 const pageSizes = [5, 10, 15, 25, 50];
 </script>
@@ -54,7 +59,7 @@ const pageSizes = [5, 10, 15, 25, 50];
 				</Select>
 			</div>
 			<div class="flex text-sm font-medium">
-				Page {{ table.getState().pagination.pageIndex + 1 }} of {{ table.getPageCount() }}
+				Page {{ props.table.getState().pagination.pageIndex + 1 }} of {{ props.last_page }}
 			</div>
 			<div class="flex items-center space-x-2">
 				<Button
@@ -78,7 +83,7 @@ const pageSizes = [5, 10, 15, 25, 50];
 				<Button
 					variant="outline"
 					class="h-8 w-8 p-0"
-					:disabled="!table.getCanNextPage()"
+					:disabled="props.table.getState().pagination.pageIndex + 1 >= props.last_page"
 					@click="table.nextPage()"
 				>
 					<span class="sr-only">Go to next page</span>
@@ -87,7 +92,7 @@ const pageSizes = [5, 10, 15, 25, 50];
 				<Button
 					variant="outline"
 					class="hidden h-8 w-8 p-0 lg:flex"
-					:disabled="!table.getCanNextPage()"
+					:disabled="props.table.getState().pagination.pageIndex + 1 >= props.last_page"
 					@click="table.setPageIndex(table.getPageCount() - 1)"
 				>
 					<span class="sr-only">Go to last page</span>

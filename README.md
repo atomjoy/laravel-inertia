@@ -30,4 +30,13 @@ https://tanstack.com/table/latest/docs/framework/vue/guide/table-state
 https://www.shadcn-vue.com/docs/components/data-table#pagination
 https://github.com/unovue/shadcn-vue/tree/dev/apps/v4/components/examples
 https://github.com/makara-dev369/shadcn-project
+
+# Query functions
+https://vue-query.vercel.app/#/getting-started/installation
+https://tanstack.com/query/latest/docs/framework/vue/guides/queries
+https://tanstack.com/query/latest/docs/framework/vue/guides/query-keys
+https://tanstack.com/query/latest/docs/framework/vue/reference/useQuery
+https://tanstack.com/query/latest/docs/framework/vue/guides/default-query-function
+https://tanstack.com/query/latest/docs/framework/vue/guides/query-keys
+https://tanstack.com/table/latest/docs/framework/vue/guide/table-state
 ```
