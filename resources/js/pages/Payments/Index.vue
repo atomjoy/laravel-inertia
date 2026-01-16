@@ -125,7 +125,7 @@ const table = useVueTable({
 		);
 
 		table.resetPageIndex()
-		table.resetPageSize()
+		// table.resetPageSize()
 
 		// console.log(filters, table.getRowCount(), table.getPageCount(), props.data?.last_page);
 	},
@@ -278,5 +278,33 @@ watch(props, (n) => {
 	border-radius: 50px;
 	background: #f9f9f9;
 	color: #222;
+}
+.status-success {
+	color: #55cc55 !important;
+	background: #55cc5522 !important;
+}
+.status-success svg {
+	stroke: #55cc55 !important;
+}
+.status-canceled {
+	color: #f1ce0d !important;
+	background: #f1ce0d22 !important;
+}
+.status-canceled svg {
+	stroke: #f1ce0d !important;
+}
+.status-failed {
+	color: #ff2233 !important;
+	background: #ff223322 !important;
+}
+.status-failed svg {
+	stroke: #ff2233 !important;
+}
+.status-processing {
+	color: #0077ff !important;
+	background: #0077ff22 !important;
+}
+.status-processing svg {
+	stroke: #0077ff !important;
 }
 </style>

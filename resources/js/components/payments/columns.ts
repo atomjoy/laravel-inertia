@@ -67,7 +67,7 @@ export const columns: ColumnDef<Payment>[] = [
 			if (!status)
 				return null
 
-			return h('div', { class: 'flex items-center payment-status status-' + status.value }, [
+			return h('div', { class: 'flex items-center min-w-30 payment-status status-' + status.value }, [
 				status.icon && h(status.icon, { class: 'mr-2 h-4 w-4 text-muted-foreground' }),
 				h('span', status.label),
 			])
