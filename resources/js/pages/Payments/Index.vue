@@ -6,7 +6,7 @@ import { filter_status } from '@/components/payments/types';
 import { columns } from '@/components/payments/columns';
 import { valueUpdater } from '@/components/ui/table/utils';
 import { router } from '@inertiajs/vue3';
-import { ref, onMounted, watch } from 'vue';
+import { ref, watch } from 'vue';
 import { ChevronDown } from 'lucide-vue-next';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -14,6 +14,9 @@ import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMe
 import { ColumnFiltersState, ExpandedState, FlexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, RowSelectionState, SortingState, useVueTable, VisibilityState, getFacetedMinMaxValues, getFacetedRowModel, getFacetedUniqueValues} from '@tanstack/vue-table';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Slider } from '@/components/ui/slider'
+
+// Page url
+const table_request_url = 'payments';
 
 const props = defineProps({
 	data: Object,
@@ -110,7 +113,7 @@ const table = useVueTable({
 
 		// Update backend here
 		router.get(
-			'payments',
+			table_request_url,
 			{
 				page: pagination.value.pageIndex + 1,
 				per_page: pagination.value.pageSize,
@@ -141,7 +144,7 @@ const table = useVueTable({
 
 		// Update backend here
 		router.get(
-			'payments',
+			table_request_url,
 			{
 				page: pagination.value.pageIndex + 1,
 				per_page: pagination.value.pageSize,
@@ -167,7 +170,7 @@ const table = useVueTable({
 
 		// Update backend here
 		router.get(
-			'payments',
+			table_request_url,
 			{
 				page: pagination.value.pageIndex + 1,
 				per_page: pagination.value.pageSize,
