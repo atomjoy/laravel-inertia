@@ -9,15 +9,18 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class PaymentFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
-    public function definition(): array
-    {
-        return [
-            //
-        ];
-    }
+	/**
+	 * Define the model's default state.
+	 *
+	 * @return array<string, mixed>
+	 */
+	public function definition(): array
+	{
+		return [
+			'name' => fake()->firstName() . ' ' . fake()->lastName(),
+			'email' => fake()->email(),
+			'status' => fake()->randomElement(['success', 'processing', 'pending', 'canceled', 'failed']),
+			'amount' => rand(10, 6000),
+		];
+	}
 }

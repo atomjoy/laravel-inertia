@@ -14,8 +14,8 @@ import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMe
 import { ColumnFiltersState, ExpandedState, FlexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, RowSelectionState, SortingState, useVueTable, VisibilityState, getFacetedMinMaxValues, getFacetedRowModel, getFacetedUniqueValues} from '@tanstack/vue-table';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Slider } from '@/components/ui/slider'
-import debounce from 'lodash/debounce'
 import throttle from 'lodash/throttle'
+import debounce from 'lodash/debounce'
 
 // Page url
 const table_request_url = 'payments';
@@ -105,12 +105,12 @@ const table = useVueTable({
 		// Refresh data amd move to first page
 		table.resetPageIndex()
 		// console.log(filters, table.getRowCount(), table.getPageCount(), props.data?.last_page, table.getState().pagination.pageIndex);
-	}, 500),
+	}, 600),
 	onSortingChange: throttle((updaterOrValue) => {
 		sorting.value = typeof updaterOrValue === 'function' ? updaterOrValue(sorting.value) : updaterOrValue;
 		// Refresh data amd move to first page
 		table.resetPageIndex()
-	}, 500),
+	}, 600),
 	onPaginationChange: throttle((updaterOrValue) => {
 		pagination.value = typeof updaterOrValue === 'function' ? updaterOrValue(pagination.value) : updaterOrValue;
 
@@ -136,7 +136,7 @@ const table = useVueTable({
 			},
 			{ preserveState: true, preserveScroll: true },
 		);
-	}, 500),
+	}, 600),
 });
 
 watch(props, (n) => {

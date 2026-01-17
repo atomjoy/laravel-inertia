@@ -34,6 +34,13 @@ export const columns: ColumnDef<Payment>[] = [
 		},
 	},
 	{
+		accessorKey: 'name',
+		header: ({ column }) => h(DataTableColumnHeader, { column, title: 'Name' }),
+		cell: ({ row }) => {
+			return h('div', { class: 'text-left font-normal' }, row.getValue('name'))
+		},
+	},
+	{
 		accessorKey: 'email',
 		header: ({ column }) => h(DataTableColumnHeader, { column, title: 'Email' }),
 		cell: ({ row }) => {
