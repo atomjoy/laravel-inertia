@@ -23,6 +23,10 @@ pages/Users.vue
 pages/Payments/Index.vue
 ```
 
+## Screen
+
+![DataTable shadcn components in Vue and Inertia](https://raw.githubusercontent.com/atomjoy/laravel-inertia/refs/heads/main/screen.webp)
+
 ## Links
 
 ```sh
