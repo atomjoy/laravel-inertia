@@ -20,5 +20,6 @@ class Payment extends Model
 		'email',
 		'status',
 		'amount',
+		'avatar'
 	];
 }

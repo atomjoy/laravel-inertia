@@ -7,6 +7,7 @@ import { statuses } from './types'
 import DropdownAction from '@/components/payments/DataTableDropDown.vue'
 import DataTableColumnHeader from './DataTableColumnHeader.vue'
 import { ArrowUpDown } from 'lucide-vue-next'
+import DataTableColumnAvatar from './DataTableColumnAvatar.vue'
 
 export const columns: ColumnDef<Payment>[] = [
 	{
@@ -31,6 +32,16 @@ export const columns: ColumnDef<Payment>[] = [
 		header: ({ column }) => h(DataTableColumnHeader, { column, title: 'ID' }),
 		cell: ({ row }) => {
 			return h('div', { class: 'text-left font-normal' }, row.getValue('id'))
+		},
+	},
+	{
+		// Hidden by default in table initialState (but required for avatar in name column)
+		accessorKey: 'avatar',
+		header: ({ column }) => h(DataTableColumnHeader, { column, title: 'Avatar' }),
+		cell: ({ row }) => {
+			return h('div', { class: 'text-left font-normal' }, [
+				h(DataTableColumnAvatar, { row: row })
+			])
 		},
 	},
 	{

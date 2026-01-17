@@ -13,10 +13,11 @@ return new class extends Migration
 	{
 		Schema::create('payments', function (Blueprint $table) {
 			$table->id();
+			$table->unsignedBigInteger('amount')->nullable()->default(0); // In cents
 			$table->string('name');
 			$table->string('email');
-			$table->string('status');
-			$table->unsignedBigInteger('amount')->nullable()->default(0); // In cents
+			$table->string('status')->nullable()->default('pending');
+			$table->string('avatar')->nullable();
 			$table->timestamps();
 		});
 	}

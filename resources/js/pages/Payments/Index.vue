@@ -57,6 +57,9 @@ const table = useVueTable({
 	// enableRowSelection: row => row.original.age > 18, //only enable row selection for adults
 	// enableMultiRowSelection: false, //only allow a single row to be selected at once
 	initialState: {
+		columnVisibility: {
+			avatar: false, //hide this column by default
+		},
 		pagination: {
 			pageIndex: props.data?.current_page - 1,
 			pageSize: props.data?.per_page,
