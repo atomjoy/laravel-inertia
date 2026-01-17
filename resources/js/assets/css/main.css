@@ -3,3 +3,47 @@
 	width: 100%;
 	height: auto;
 }
+
+.payment-status {
+	float: left;
+	padding: 5px 10px;
+	border-radius: 50px;
+	background: #f9f9f9;
+	color: #222;
+}
+
+.payment-status-success {
+	color: #55cc55 !important;
+	background: #55cc5522 !important;
+}
+
+.payment-status-success svg {
+	stroke: #55cc55 !important;
+}
+
+.payment-status-canceled {
+	color: #f1ce0d !important;
+	background: #f1ce0d22 !important;
+}
+
+.payment-status-canceled svg {
+	stroke: #f1ce0d !important;
+}
+
+.payment-status-failed {
+	color: #ff2233 !important;
+	background: #ff223322 !important;
+}
+
+.payment-status-failed svg {
+	stroke: #ff2233 !important;
+}
+
+.payment-status-processing {
+	color: #0077ff !important;
+	background: #0077ff22 !important;
+}
+
+.payment-status-processing svg {
+	stroke: #0077ff !important;
+}

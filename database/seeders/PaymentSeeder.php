@@ -19,30 +19,35 @@ class PaymentSeeder extends Seeder
 			'status' => 'canceled',
 			'amount' => rand(10, 600),
 			'email' => fake()->email(),
+			'created_at' => fake()->dateTimeThisYear(),
 		]);
 
 		Payment::factory()->create([
 			'status' => 'failed',
 			'amount' => rand(10, 600),
 			'email' => fake()->email(),
+			'created_at' => fake()->dateTimeThisYear(),
 		]);
 
 		Payment::factory()->create([
 			'status' => 'success',
 			'amount' => rand(10, 600),
 			'email' => fake()->email(),
+			'created_at' => fake()->dateTimeThisYear(),
 		]);
 
 		Payment::factory()->create([
 			'status' => 'pending',
 			'amount' => rand(10, 600),
 			'email' => fake()->email(),
+			'created_at' => fake()->dateTimeThisYear(),
 		]);
 
 		Payment::factory()->create([
 			'status' => 'processing',
 			'amount' => rand(10, 600),
 			'email' => fake()->email(),
+			'created_at' => fake()->dateTimeThisYear(),
 		]);
 
 		for ($i = 0; $i < 100; $i++) {
@@ -50,6 +55,7 @@ class PaymentSeeder extends Seeder
 				'status' => $status[rand(0, 4)],
 				'amount' => rand(40, 6000),
 				'email' => fake()->email(),
+				'created_at' => fake()->dateTimeThisYear(),
 			]);
 		}
 	}

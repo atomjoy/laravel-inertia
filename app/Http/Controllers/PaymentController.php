@@ -7,6 +7,7 @@ use App\Http\Requests\StorePaymentRequest;
 use App\Http\Requests\UpdatePaymentRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 
@@ -29,6 +30,8 @@ class PaymentController extends Controller
 			"amount.*"  => "sometimes|numeric|distinct|min:0",
 			"status"    => "sometimes|array|min:1",
 			"status.*"  => "sometimes|string|distinct|min:1",
+			"created_at"    => "sometimes|array|min:1",
+			"created_at.*"  => "sometimes|string|distinct|date_format:Y-m-d",
 			// 'sku' => 'required|string|regex:​​/^[a-zA-Z0-9]+$/',
 		]);
 
@@ -37,15 +40,15 @@ class PaymentController extends Controller
 		$email = request()->input('email', null);
 		$status = request()->input('status', null);
 		$amount = request()->input('amount', null);
+		$created_at = request()->input('created_at', null);
 		$sortField = request()->input('sort_field', 'id');
 		$sortDirection = request()->input('sort_direction', 'desc');
 		$sortDirection == 'desc' ? $sortDirection = 'desc' : $sortDirection = 'asc';
 
-		if (!empty($status)) {
-			$filters[] = ['id' => 'status', 'value' => $status];
-			$filters[] = ['id' => 'amount', 'value' => $amount];
-			$filters[] = ['id' => 'email', 'value' => $email];
-		}
+		$filters[] = ['id' => 'status', 'value' => $status];
+		$filters[] = ['id' => 'amount', 'value' => $amount];
+		$filters[] = ['id' => 'email', 'value' => $email];
+		$filters[] = ['id' => 'created_at', 'value' => $created_at];
 
 		$amount_max = (int) ((Payment::max("amount") / 100) + 1);
 
@@ -63,6 +66,13 @@ class PaymentController extends Controller
 					$amount[0] = $amount[0] * 100;
 					$amount[1] = $amount[1] * 100;
 					$query->whereBetween('amount', $amount); // In cents
+				}
+			})->when($created_at, function ($query, $created_at) {
+				if (!empty($created_at[0])) {
+					$query->whereDate('created_at', '>=', date($created_at[0]));
+				}
+				if (!empty($created_at[1])) {
+					$query->whereDate('created_at', '<=', date($created_at[1]));
 				}
 			})->orderBy($sortField, $sortDirection)->paginate(perPage: $perPage);
 

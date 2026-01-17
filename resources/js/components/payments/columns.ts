@@ -43,8 +43,10 @@ export const columns: ColumnDef<Payment>[] = [
 				h(DataTableColumnAvatar, { row: row })
 			])
 		},
+		enableHiding: true,
 	},
 	{
+		// accessorFn: row => `${row.firstName} ${row.lastName}`,
 		accessorKey: 'name',
 		header: ({ column }) => h(DataTableColumnHeader, { column, title: 'Name' }),
 		cell: ({ row }) => {
@@ -86,7 +88,7 @@ export const columns: ColumnDef<Payment>[] = [
 			if (!status)
 				return null
 
-			return h('div', { class: 'flex items-center min-w-30 payment-status status-' + status.value }, [
+			return h('div', { class: 'flex items-center min-w-30 payment-status payment-status-' + status.value }, [
 				status.icon && h(status.icon, { class: 'mr-2 h-4 w-4 text-muted-foreground' }),
 				h('span', status.label),
 			])
@@ -96,6 +98,15 @@ export const columns: ColumnDef<Payment>[] = [
 		},
 		enableSorting: true,
 		enableHiding: false,
+	},
+	{
+		accessorKey: 'created_at',
+		header: ({ column }) => h(DataTableColumnHeader, { column, title: 'Date' }),
+		cell: ({ row }) => {
+			let dt: string = row.getValue('created_at');
+			let date = dt.split(' ')[0] ?? ''
+			return h('div', { class: 'text-left font-normal' }, date)
+		},
 	},
 	{
 		id: 'actions',

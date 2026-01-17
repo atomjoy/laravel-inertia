@@ -20,6 +20,20 @@ class Payment extends Model
 		'email',
 		'status',
 		'amount',
-		'avatar'
+		'avatar',
+		'created_at'
 	];
+
+	/**
+	 * Get the attributes that should be cast.
+	 *
+	 * @return array<string, string>
+	 */
+	protected function casts(): array
+	{
+		return [
+			'created_at' => 'datetime:Y-m-d h:i:s',
+			'updated_at' => 'datetime:Y-m-d h:i:s',
+		];
+	}
 }
