@@ -25,8 +25,8 @@ class PaymentController extends Controller
 	public function index(Request $request)
 	{
 		$validator = Validator::make($request->all(), [
-			"amount"    => "sometimes|array|min:1",
-			"amount.*"  => "sometimes|numeric|distinct|min:1",
+			"amount"    => "sometimes|array|min:2",
+			"amount.*"  => "sometimes|numeric|distinct|min:0",
 			"status"    => "sometimes|array|min:1",
 			"status.*"  => "sometimes|string|distinct|min:1",
 			// 'sku' => 'required|string|regex:​​/^[a-zA-Z0-9]+$/',
@@ -47,8 +47,7 @@ class PaymentController extends Controller
 			$filters[] = ['id' => 'email', 'value' => $email];
 		}
 
-		$slider_min = Payment::min("amount");
-		$slider_max = Payment::max("amount");
+		$amount_max = (int) ((Payment::max("amount") / 100) + 1);
 
 		$payload =  Payment::query()
 			->when($status, function ($query, $status) {
@@ -61,26 +60,23 @@ class PaymentController extends Controller
 				}
 			})->when($amount, function ($query, $amount) {
 				if (!empty($amount)) {
-					$query->whereBetween('amount', $amount);
-					// $min = (int) $amount[0] ?? 0;
-					// $max = (int) $amount[1] ?? 5000;
-					// $query->where('amount', '>=', $min)->where('amount', '<=', $max);
+					$amount[0] = $amount[0] * 100;
+					$amount[1] = $amount[1] * 100;
+					$query->whereBetween('amount', $amount); // In cents
 				}
 			})->orderBy($sortField, $sortDirection)->paginate(perPage: $perPage);
 
 		if (request()->wantsJson()) {
 			return response()->json([
 				'payload' => $payload,
-				'slider_min' => $slider_min ?? 0,
-				'slider_max' => $slider_max ?? 10000,
+				'amount_max' => $amount_max ?? 10000,
 				'filter' => $filters,
 				'filter_errors' => $validator->fails() ? $validator->errors() : null,
 			], 200);
 		} else {
 			return Inertia::render('Payments/Index', [
 				'data' => $payload,
-				'slider_min' => $slider_min ?? 0,
-				'slider_max' => $slider_max ?? 10000,
+				'amount_max' => $amount_max ?? 10000,
 				'filter' => $filters,
 				'filter_errors' => $validator->fails() ? $validator->errors() : null,
 				// 'json' => new JsonResponse(['key' => 'value']),

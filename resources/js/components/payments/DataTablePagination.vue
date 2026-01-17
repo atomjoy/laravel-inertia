@@ -21,7 +21,8 @@ interface DataTablePaginationProps {
 	table: Table<TData>
 }
 const props = defineProps<DataTablePaginationProps>();
-const pageSizes = [5, 10, 15, 25, 50];
+// First must be equals with default per_page variable from controller
+const pageSizes = [10, 15, 25, 50, 100];
 </script>
 
 <template>

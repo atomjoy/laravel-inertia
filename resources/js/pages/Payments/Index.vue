@@ -14,20 +14,21 @@ import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMe
 import { ColumnFiltersState, ExpandedState, FlexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, RowSelectionState, SortingState, useVueTable, VisibilityState, getFacetedMinMaxValues, getFacetedRowModel, getFacetedUniqueValues} from '@tanstack/vue-table';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Slider } from '@/components/ui/slider'
+import debounce from 'lodash/debounce'
+import throttle from 'lodash/throttle'
 
 // Page url
 const table_request_url = 'payments';
 
 const props = defineProps({
 	data: Object,
-	slider_min: Number,
-	slider_max: Number,
+	amount_max: Number,
 	filter: Array,
 	filter_errors: Object,
 });
 
 const filter_toolbar = [filter_status];
-const slider = ref([0,props.slider_max ?? 1000])
+const slider = ref([0,props.amount_max ?? 10000])
 const expanded = ref<ExpandedState>({});
 const rowSelection = ref<RowSelectionState>({});
 const columnVisibility = ref<VisibilityState>({});
@@ -98,7 +99,8 @@ const table = useVueTable({
 	onColumnVisibilityChange: (updaterOrValue) => valueUpdater(updaterOrValue, columnVisibility),
 	onRowSelectionChange: (updaterOrValue) => valueUpdater(updaterOrValue, rowSelection),
 	onExpandedChange: (updaterOrValue) => valueUpdater(updaterOrValue, expanded),
-	onColumnFiltersChange: (updaterOrValue) => {
+	// Throttle or debounce requests
+	onColumnFiltersChange: throttle((updaterOrValue) => {
 		columnFilters.value = typeof updaterOrValue === 'function' ? updaterOrValue(columnFilters.value) : updaterOrValue;
 
 		// Filters
@@ -122,13 +124,13 @@ const table = useVueTable({
 				...filters,
 			},
 			{ preserveState: true, preserveScroll: true },
-		);
+		)
 
+		// Move to first page
 		table.resetPageIndex()
 		// table.resetPageSize()
-
-		// console.log(filters, table.getRowCount(), table.getPageCount(), props.data?.last_page);
-	},
+		// console.log(filters, table.getRowCount(), table.getPageCount(), props.data?.last_page, table.getState().pagination.pageIndex);
+	}, 500),
 	onSortingChange: (updaterOrValue) => {
 		sorting.value = typeof updaterOrValue === 'function' ? updaterOrValue(sorting.value) : updaterOrValue;
 
@@ -184,7 +186,7 @@ const table = useVueTable({
 });
 
 watch(props, (n) => {
-	console.log("Props", n);
+	// console.log("Props", n);
 })
 </script>
 
@@ -208,9 +210,9 @@ watch(props, (n) => {
 				<Slider
 					v-model="slider"
 					@update:model-value="table.getColumn('amount')?.setFilterValue($event)"
-					:min="slider_min"
-					:max="slider_max"
-					:step="10"
+					:min="0"
+					:max="amount_max"
+					:step="0.5"
 					class="mt-2 w-full mb-4"
 					aria-label="Price Range"
 				/>

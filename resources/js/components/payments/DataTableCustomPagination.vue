@@ -26,7 +26,7 @@ interface DataTablePaginationProps extends LastPage {
 }
 
 const props = defineProps<DataTablePaginationProps>();
-const pageSizes = [5, 10, 15, 25, 50];
+const pageSizes = [10, 15, 25, 50, 100];
 </script>
 
 <template>
@@ -93,7 +93,7 @@ const pageSizes = [5, 10, 15, 25, 50];
 					variant="outline"
 					class="hidden h-8 w-8 p-0 lg:flex"
 					:disabled="props.table.getState().pagination.pageIndex + 1 >= props.last_page"
-					@click="table.setPageIndex(table.getPageCount() - 1)"
+					@click="table.setPageIndex(props.last_page - 1)"
 				>
 					<span class="sr-only">Go to last page</span>
 					<ChevronsRight class="h-4 w-4" />

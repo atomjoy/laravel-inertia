@@ -44,7 +44,8 @@ export const columns: ColumnDef<Payment>[] = [
 		accessorKey: 'amount',
 		header: ({ column }) => h(DataTableColumnHeader, { column, title: 'Amount' }),
 		cell: ({ row }) => {
-			const amount = Number.parseFloat(row.getValue('amount'))
+			// Decimal
+			const amount = Number.parseFloat(row.getValue('amount')) / 100
 			const formatted = new Intl.NumberFormat('en-US', {
 				style: 'currency',
 				currency: 'USD',
