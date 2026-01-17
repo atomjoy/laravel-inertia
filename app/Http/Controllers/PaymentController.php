@@ -67,8 +67,8 @@ class PaymentController extends Controller
 				}
 			})->when($amount, function ($query, $amount) {
 				if (!empty($amount)) {
-					$amount[0] = $amount[0] * 100;
-					$amount[1] = $amount[1] * 100;
+					$amount[0] = (int) ($amount[0] * 100);
+					$amount[1] = (int) ($amount[1] * 100);
 					$query->whereBetween('amount', $amount); // In cents
 				}
 			})->when($created_at, function ($query, $created_at) {
