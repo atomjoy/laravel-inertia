@@ -3,16 +3,27 @@ import { MoreHorizontal } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Edit, Trash, Copy, View } from 'lucide-vue-next'
+import type { Payment } from './types'
 
-defineProps<{
-  payment: {
-    id: string
-  }
+const props = defineProps<{
+	payment: Payment,
+	// Or with callback function (update columns.ts first)
+	// onEdit: Function,
 }>()
 
+const edit = (id: any) => {
+	console.log("Dropdown edit", id);
+    // props.onEdit(id);
+}
+
+const remove = (id: any) => {
+	console.log("Dropdown remove", id);
+    // props.onEdit(id);
+}
+
 function copy(id: string) {
-    console.log("Row id:", id);
-    navigator.clipboard.writeText(id)
+	navigator.clipboard.writeText(id)
+    console.log("Dropdown copy:", id);
 }
 </script>
 
@@ -26,17 +37,14 @@ function copy(id: string) {
     </DropdownMenuTrigger>
     <DropdownMenuContent align="end">
 		<DropdownMenuLabel>Actions</DropdownMenuLabel>
-		<DropdownMenuItem @click="copy(payment.id)">
+		<DropdownMenuItem @click="edit(payment.id)">
 			<Edit class="mr-2 h-4 w-4 text-muted-foreground/70" /> Edit
-		</DropdownMenuItem>
-		<DropdownMenuItem @click="copy(payment.id)">
-			<View class="mr-2 h-4 w-4 text-muted-foreground/70" /> View
 		</DropdownMenuItem>
 		<DropdownMenuItem @click="copy(payment.id)">
 			<Copy class="mr-2 h-4 w-4 text-muted-foreground/70" /> Copy ID
 		</DropdownMenuItem>
 		<DropdownMenuSeparator />
-		<DropdownMenuItem @click="copy(payment.id)" class="text-rose-600">
+		<DropdownMenuItem @click="remove(payment.id)" class="text-rose-600">
 			<Trash class="mr-2 h-4 w-4" /> Delete
 		</DropdownMenuItem>
     </DropdownMenuContent>

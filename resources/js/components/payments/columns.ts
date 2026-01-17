@@ -4,7 +4,7 @@ import type { ColumnDef } from '@tanstack/vue-table'
 import { Checkbox } from '../ui/checkbox'
 import { Button } from '../ui/button'
 import { statuses } from './types'
-import DropdownAction from '@/components/payments/DataTableDropDown.vue'
+import DropdownAction from '@/components/payments/DataTableColumnDropDown.vue'
 import DataTableColumnHeader from './DataTableColumnHeader.vue'
 import { ArrowUpDown } from 'lucide-vue-next'
 import DataTableColumnAvatar from './DataTableColumnAvatar.vue'
@@ -103,10 +103,9 @@ export const columns: ColumnDef<Payment>[] = [
 		header: () => h('div', { class: 'text-right' }, 'Action'),
 		cell: ({ row }) => {
 			const payment = row.original
-
-			return h('div', { class: 'text-right' }, h(DropdownAction, {
-				payment,
-			}))
+			return h('div', { class: 'text-right' }, [
+				h(DropdownAction, { payment: payment }),
+			])
 		},
 	},
 ]

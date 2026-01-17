@@ -7,17 +7,14 @@ import {
 import { Row } from '@tanstack/vue-table';
 import { Payment } from './types';
 
-interface UserAvatar {
+interface myProps {
 	row: Row<Payment>
 }
 
-let props = defineProps<UserAvatar>()
-
+let props = defineProps<myProps>()
 // let avatar: string = props.row.getValue('avatar') ?? '/default/avatar.webp'
 let avatar: string = props.row.getValue('avatar')
 let name: string = props.row.getValue('name') ?? 'A'
-
-console.log(props.row);
 </script>
 
 <template>

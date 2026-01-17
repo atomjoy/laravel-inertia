@@ -1,15 +1,26 @@
-<script setup>
+<script setup lang="ts">
 import { MoreHorizontal } from 'lucide-vue-next'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
+import { Row } from '@tanstack/vue-table';
+import { Payment } from './types';
 
-const props = defineProps({
-    payment: Object,
-    onEdit: Function,
-})
+interface myProps {
+	row: Row<Payment>,
+	// Or with callback function (update columns.ts first)
+	// onEdit: Function,
+}
 
-const edit = (id) => {
-    props.onEdit(id);
+let props = defineProps<myProps>();
+
+const edit = (id: any) => {
+	// props.onEdit(id);
+	console.log("Edit", id);
+}
+
+const remove = (id: any) => {
+	// props.onEdit(id);
+	console.log("Edit", id);
 }
 </script>
 
@@ -23,10 +34,8 @@ const edit = (id) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem @click="edit(payment.id)">
-                Edit
-            </DropdownMenuItem>
-            <DropdownMenuItem>Delete</DropdownMenuItem>
+            <DropdownMenuItem @click="edit(row.getValue('id'))">Edit</DropdownMenuItem>
+            <DropdownMenuItem @click="remove(row.getValue('id'))">Delete</DropdownMenuItem>
         </DropdownMenuContent>
     </DropdownMenu>
 </template>
