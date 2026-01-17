@@ -102,60 +102,15 @@ const table = useVueTable({
 	// Throttle or debounce requests
 	onColumnFiltersChange: throttle((updaterOrValue) => {
 		columnFilters.value = typeof updaterOrValue === 'function' ? updaterOrValue(columnFilters.value) : updaterOrValue;
-
-		// Filters
-		let filters = {};
-		if (columnFilters.value) {
-			filters = columnFilters.value.reduce((acc, filter) => {
-				// @ts-ignore
-        		acc[filter.id] = filter.value
-        		return acc
-      		}, {})
-		}
-
-		// Update backend here
-		router.get(
-			table_request_url,
-			{
-				page: pagination.value.pageIndex + 1,
-				per_page: pagination.value.pageSize,
-				sort_field: sorting.value[0]?.id,
-				sort_direction: sorting.value.length == 0 ? undefined : sorting.value[0]?.desc ? 'desc' : 'asc',
-				...filters,
-			},
-			{ preserveState: true, preserveScroll: true },
-		)
-
-		// Move to first page
+		// Refresh data amd move to first page
 		table.resetPageIndex()
-		// table.resetPageSize()
+
 		// console.log(filters, table.getRowCount(), table.getPageCount(), props.data?.last_page, table.getState().pagination.pageIndex);
 	}, 500),
 	onSortingChange: (updaterOrValue) => {
 		sorting.value = typeof updaterOrValue === 'function' ? updaterOrValue(sorting.value) : updaterOrValue;
-
-		// Filters
-		let filters = {};
-		if (columnFilters.value) {
-			filters = columnFilters.value.reduce((acc, filter) => {
-				// @ts-ignore
-        		acc[filter.id] = filter.value
-        		return acc
-      		}, {})
-		}
-
-		// Update backend here
-		router.get(
-			table_request_url,
-			{
-				page: pagination.value.pageIndex + 1,
-				per_page: pagination.value.pageSize,
-				sort_field: sorting.value[0]?.id,
-				sort_direction: sorting.value.length == 0 ? undefined : sorting.value[0]?.desc ? 'desc' : 'asc',
-				...filters,
-			},
-			{ preserveState: true, preserveScroll: true },
-		);
+		// Refresh data amd move to first page
+		table.resetPageIndex()
 	},
 	onPaginationChange: (updaterOrValue) => {
 		pagination.value = typeof updaterOrValue === 'function' ? updaterOrValue(pagination.value) : updaterOrValue;
@@ -170,7 +125,7 @@ const table = useVueTable({
       		}, {})
 		}
 
-		// Update backend here
+		// Update backend here (required)
 		router.get(
 			table_request_url,
 			{
