@@ -198,7 +198,7 @@ watch(props, (n) => {
 							:class="cn('w-50 justify-start text-left font-normal', !fdate && 'text-muted-foreground')"
 						>
 							<CalendarIcon />
-							{{ fdate ? df.format(fdate.toDate(getLocalTimeZone())) : "Pick a date" }}
+							{{ fdate ? df.format(fdate.toDate(getLocalTimeZone())) : "Start date" }}
 						</Button>
 					</PopoverTrigger>
 					<PopoverContent class="w-auto p-0" align="start">
@@ -225,7 +225,7 @@ watch(props, (n) => {
 							:class="cn('w-50 justify-start text-left font-normal', !tdate && 'text-muted-foreground')"
 						>
 							<CalendarIcon />
-							{{ tdate ? df.format(tdate.toDate(getLocalTimeZone())) : "Pick a date" }}
+							{{ tdate ? df.format(tdate.toDate(getLocalTimeZone())) : "End date" }}
 						</Button>
 					</PopoverTrigger>
 					<PopoverContent class="w-auto p-0" align="start">

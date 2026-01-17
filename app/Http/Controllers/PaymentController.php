@@ -30,7 +30,7 @@ class PaymentController extends Controller
 			"amount.*"  => "sometimes|numeric|distinct|min:0",
 			"status"    => "sometimes|array|min:1",
 			"status.*"  => "sometimes|string|distinct|min:1",
-			"created_at"    => "sometimes|array|min:1",
+			"created_at"    => "sometimes|array|min:2",
 			"created_at.*"  => "sometimes|string|distinct|date_format:Y-m-d",
 			// 'sku' => 'required|string|regex:​​/^[a-zA-Z0-9]+$/',
 		]);
@@ -68,10 +68,8 @@ class PaymentController extends Controller
 					$query->whereBetween('amount', $amount); // In cents
 				}
 			})->when($created_at, function ($query, $created_at) {
-				if (!empty($created_at[0])) {
+				if (!empty($created_at[0]) && !empty($created_at[1])) {
 					$query->whereDate('created_at', '>=', date($created_at[0]));
-				}
-				if (!empty($created_at[1])) {
 					$query->whereDate('created_at', '<=', date($created_at[1]));
 				}
 			})->orderBy($sortField, $sortDirection)->paginate(perPage: $perPage);
