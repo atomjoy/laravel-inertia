@@ -8,6 +8,7 @@ use App\Http\Requests\UpdatePaymentRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules\Date;
 use Inertia\Inertia;
 
 class PaymentController extends Controller
@@ -31,7 +32,11 @@ class PaymentController extends Controller
 			"status.*"  => "sometimes|string|distinct|min:1",
 			"created_at"    => "sometimes|array|min:2",
 			"created_at.*"  => "sometimes|string|distinct|date_format:Y-m-d",
+			"created_at.1"  => ['sometimes', (new Date)->after('created_at.0')], // Ensures end date is after start_date
 			// 'sku' => 'required|string|regex:​​/^[a-zA-Z0-9]+$/',
+		], [
+			'created_at' => 'Enter a start date and end date.',
+			'created_at.1' => 'The end date must be later than the start date.'
 		]);
 
 		$filters = [];
