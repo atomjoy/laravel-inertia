@@ -28,6 +28,7 @@ class PaymentController extends Controller
 		$validator = Validator::make($request->all(), [
 			"amount"    => "sometimes|array|min:2",
 			"amount.*"  => "sometimes|numeric|distinct|min:0",
+			"amount.1"  => "sometimes|numeric|gt:amount.0",
 			"status"    => "sometimes|array|min:1",
 			"status.*"  => "sometimes|string|distinct|min:1",
 			"created_at"    => "sometimes|array|min:2",
@@ -35,8 +36,14 @@ class PaymentController extends Controller
 			"created_at.1"  => ['sometimes', (new Date)->after('created_at.0')], // Ensures end date is after start_date
 			// 'sku' => 'required|string|regex:​​/^[a-zA-Z0-9]+$/',
 		], [
+			'amount.1' => 'Invalid price range.',
 			'created_at' => 'Enter a start date and end date.',
 			'created_at.1' => 'The end date must be later than the start date.'
+		], [
+			'amount.0' => 'start amount',
+			'amount.1' => 'end amount',
+			'created_at.0' => 'start date',
+			'created_at.1' => 'end date',
 		]);
 
 		$filters = [];
