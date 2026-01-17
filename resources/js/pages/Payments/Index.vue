@@ -95,7 +95,7 @@ const table = useVueTable({
 	getFacetedRowModel: getFacetedRowModel(),
   	getFacetedUniqueValues: getFacetedUniqueValues(),
   	getFacetedMinMaxValues: getFacetedMinMaxValues(),
-	// getPaginationRowModel: getPaginationRowModel(),
+	getPaginationRowModel: getPaginationRowModel(), // Not required here
 	onColumnVisibilityChange: (updaterOrValue) => valueUpdater(updaterOrValue, columnVisibility),
 	onRowSelectionChange: (updaterOrValue) => valueUpdater(updaterOrValue, rowSelection),
 	onExpandedChange: (updaterOrValue) => valueUpdater(updaterOrValue, expanded),
@@ -104,15 +104,14 @@ const table = useVueTable({
 		columnFilters.value = typeof updaterOrValue === 'function' ? updaterOrValue(columnFilters.value) : updaterOrValue;
 		// Refresh data amd move to first page
 		table.resetPageIndex()
-
 		// console.log(filters, table.getRowCount(), table.getPageCount(), props.data?.last_page, table.getState().pagination.pageIndex);
 	}, 500),
-	onSortingChange: (updaterOrValue) => {
+	onSortingChange: throttle((updaterOrValue) => {
 		sorting.value = typeof updaterOrValue === 'function' ? updaterOrValue(sorting.value) : updaterOrValue;
 		// Refresh data amd move to first page
 		table.resetPageIndex()
-	},
-	onPaginationChange: (updaterOrValue) => {
+	}, 500),
+	onPaginationChange: throttle((updaterOrValue) => {
 		pagination.value = typeof updaterOrValue === 'function' ? updaterOrValue(pagination.value) : updaterOrValue;
 
 		// Filters
@@ -137,7 +136,7 @@ const table = useVueTable({
 			},
 			{ preserveState: true, preserveScroll: true },
 		);
-	},
+	}, 500),
 });
 
 watch(props, (n) => {
