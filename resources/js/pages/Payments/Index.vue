@@ -23,7 +23,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Slider } from '@/components/ui/slider'
 import throttle from 'lodash/throttle'
 import debounce from 'lodash/debounce'
-import DatePicker from '@/components/payments/DatePicker.vue';
 
 // Page url
 const table_request_url = 'payments';

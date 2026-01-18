@@ -41,7 +41,7 @@ const props = defineProps<{
 	</div>
 	<div class="flex items-center space-x-6 lg:space-x-8">
   		<div class="flex flex-col gap-6">
-			<Pagination v-slot="{ page }" :page="props.table.getState().pagination.pageIndex + 1" :items-per-page="props.table.getState().pagination.pageSize" :total="props.total" :default-page="props.table.getState().pagination.pageIndex + 1">
+			<Pagination v-slot="{ page }" :sibling-count="2" :page="props.table.getState().pagination.pageIndex + 1" :items-per-page="props.table.getState().pagination.pageSize" :total="props.total" :default-page="props.table.getState().pagination.pageIndex + 1">
 			<PaginationContent v-slot="{ items }">
 				<div class="flex items-center space-x-2 mr-2">
 					<p class="text-sm font-medium">Rows per page</p>
@@ -104,9 +104,9 @@ const props = defineProps<{
 					>
 						{{ item.value }}
 					</PaginationItem>
+					<PaginationEllipsis v-else :index="index"/>
 				</template>
 
-				<!-- <PaginationEllipsis :index="4" v-if="page < props.lastPage" /> -->
 
 				<!-- <PaginationNext
 					:disabled="!table.getCanNextPage()"

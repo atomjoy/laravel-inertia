@@ -20,7 +20,7 @@ class PaymentFactory extends Factory
 			'name' => fake()->firstName() . ' ' . fake()->lastName(),
 			'email' => fake()->email(),
 			'status' => fake()->randomElement(['success', 'processing', 'pending', 'canceled', 'failed']),
-			'avatar' => fake()->randomElement(['/default/man.webp', '/default/woman.webp', '/default/zebra.webp', '/default/donkey.webp', '/default/avatar.webp']),
+			'avatar' => fake()->randomElement(['/default/avatar/avatar.webp', '/default/avatar/man.webp', '/default/avatar/woman.webp', '/default/avatar/zebra.webp', '/default/avatar/lion.webp', '/default/avatar/horse.webp', '/default/avatar/donkey.webp',]),
 			'amount' => rand(10, 6000),
 		];
 	}
