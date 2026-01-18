@@ -1,5 +1,6 @@
 <script setup lang="ts" generic="TData, TValue">
 import DataTablePagination from '@/components/payments/DataTableCustomPagination.vue';
+import DataTablePaginationNumbers from '@/components/payments/DataTablePaginationNumbers.vue';
 import Filter from '@/components/payments/Filter.vue';
 import type { PaginationState } from '@tanstack/vue-table';
 import { filter_status } from '@/components/payments/types';
@@ -23,7 +24,6 @@ import { Slider } from '@/components/ui/slider'
 import throttle from 'lodash/throttle'
 import debounce from 'lodash/debounce'
 import DatePicker from '@/components/payments/DatePicker.vue';
-import Paginate from '@/components/payments/Pagination.vue';
 
 // Page url
 const table_request_url = 'payments';
@@ -299,6 +299,6 @@ watch(props, (n) => {
 
 		<!-- <DataTablePagination :table="table" :last_page="props.data?.last_page ?? 0" /> -->
 
-		<Paginate :table="table" :total="props.data?.total" :last-page="props.data?.last_page"/>
+		<DataTablePaginationNumbers :table="table" :total="props.data?.total" :last-page="props.data?.last_page"/>
 	</div>
 </template>
