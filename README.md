@@ -35,6 +35,7 @@ https://tanstack.com/table/latest/docs/framework/vue/guide/table-state
 https://www.shadcn-vue.com/docs/components/data-table#pagination
 https://github.com/unovue/shadcn-vue/tree/dev/apps/v4/components/examples
 https://github.com/makara-dev369/shadcn-project
+https://github.com/sadmann7/tablecn
 
 # Query functions
 https://vue-query.vercel.app/#/getting-started/installation
