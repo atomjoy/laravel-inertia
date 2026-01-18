@@ -154,7 +154,7 @@ const datePlaceholder = today(getLocalTimeZone())
 const fdate = ref<DateValue>()
 const tdate = ref<DateValue>()
 const df = new DateFormatter('en-US', {
-  dateStyle: 'long',
+	dateStyle: 'short'
 })
 
 watch(props, (n) => {
@@ -166,36 +166,18 @@ watch(props, (n) => {
 	<div class="full p-10">
 		<div class="rounded-md border mb-4 p-4" v-if="sorting">{{ sorting }} {{ rowSelection }} {{ columnFilters }} {{ props.filter_errors }}</div>
 
-		<div class="flex items-center my-4">
-			<Input
-				class="h-9 max-w-50 mr-2" placeholder="Filter emails"
-				:model-value="table.getColumn('email')?.getFilterValue() as string"
-				@update:model-value="table.getColumn('email')?.setFilterValue($event)"
-			/>
+		<div class="flex flex-col gap-1">
+			<h2 class="text-2xl font-semibold tracking-tight">Payments</h2>
+			<p class="text-muted-foreground">Here's a list of your payments for this year.</p>
+		</div>
 
-			<div v-for="filter in filter_toolbar" :key="filter.title" class="mr-2">
-				<Filter :column="table.getColumn(filter.column)" :title="filter.title" :options="filter.data"></Filter>
-			</div>
-
-			<div class="w-full max-w-60 mx-2">
-				<div class="text-xs">Price range ($<span class="font-medium tabular-nums">{{ slider[0] }}</span> - <span class="font-medium tabular-nums">{{ slider[1] }}</span>).</div>
-				<Slider
-					v-model="slider"
-					@update:model-value="table.getColumn('amount')?.setFilterValue($event)"
-					:min="0"
-					:max="amount_max"
-					:step="0.5"
-					class="mt-2 w-full mb-4"
-					aria-label="Price Range"
-				/>
-			</div>
-
-			<div class="mx-2">
+		<div class="flex flex-col my-2 lg:flex-row gap-2">
+			<div class="date-box flex">
 				<Popover v-slot="{ close }">
 					<PopoverTrigger as-child>
 						<Button
 							variant="outline"
-							:class="cn('w-50 justify-start text-left font-normal', !fdate && 'text-muted-foreground')"
+							:class="cn('w-50 justify-start text-left font-normal mr-2', !fdate && 'text-muted-foreground')"
 						>
 							<CalendarIcon />
 							{{ fdate ? df.format(fdate.toDate(getLocalTimeZone())) : "Start date" }}
@@ -215,9 +197,6 @@ watch(props, (n) => {
 						/>
 					</PopoverContent>
 				</Popover>
-			</div>
-
-			<div class="mx-2">
 				<Popover v-slot="{ close }">
 					<PopoverTrigger as-child>
 						<Button
@@ -243,12 +222,35 @@ watch(props, (n) => {
 					</PopoverContent>
 				</Popover>
 			</div>
+			<div class="filter-box flex">
+				<Input
+					class="w-full h-9 min-w-50 max-w-50 mr-2" placeholder="Filter emails"
+					:model-value="table.getColumn('email')?.getFilterValue() as string"
+					@update:model-value="table.getColumn('email')?.setFilterValue($event)"
+				/>
+
+				<div v-for="filter in filter_toolbar" :key="filter.title" class="md:w-full mr-2 max-w-50">
+					<Filter :column="table.getColumn(filter.column)" :title="filter.title" :options="filter.data"></Filter>
+				</div>
+			</div>
+
+			<div class="w-full">
+				<div class="text-xs">Price range ($<span class="font-medium tabular-nums">{{ slider[0] }}</span> - <span class="font-medium tabular-nums">{{ slider[1] }}</span>).</div>
+				<Slider
+					v-model="slider"
+					@update:model-value="table.getColumn('amount')?.setFilterValue($event)"
+					:min="0"
+					:max="amount_max"
+					:step="0.5"
+					class="mt-2 w-full mb-4"
+					aria-label="Price Range"
+				/>
+			</div>
 
 			<DropdownMenu>
 				<DropdownMenuTrigger as-child>
 					<Button variant="outline" class="ml-auto"> Columns <ChevronDown class="ml-2 h-4 w-4" /> </Button>
 				</DropdownMenuTrigger>
-
 				<DropdownMenuContent align="end">
 					<DropdownMenuCheckboxItem
 						v-for="column in table.getAllColumns().filter((column) => column.getCanHide())"
@@ -268,7 +270,6 @@ watch(props, (n) => {
 		</div>
 
 		<div class="rounded-md border">
-
 			<Table>
 				<TableHeader>
 					<TableRow v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">

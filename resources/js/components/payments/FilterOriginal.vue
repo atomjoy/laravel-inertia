@@ -38,18 +38,19 @@ const filterFunction = (val, term) => {
 <template>
     <Popover>
         <PopoverTrigger as-child>
-            <Button variant="outline" size="sm" class="w-full min-w-50 max-w-50 h-9 mr-2">
+            <Button variant="outline" size="sm" class="h-9 mr-2">
                 <CirclePlus class="mr-2 h-4 w-4" />
                 {{ title }}
-                <template v-if="selectedValues.size >= 0">
+                <template v-if="selectedValues.size > 0">
                     <Separator orientation="vertical" class="mx-2 h-4" />
                     <Badge variant="secondary" class="rounded-sm px-1 font-normal lg:hidden">
                         {{ selectedValues.size }}
                     </Badge>
                     <div class="hidden space-x-1 lg:flex">
-                        <Badge v-if="selectedValues.size >= 0" variant="secondary" class="rounded-sm px-1 font-normal">
-                            {{ selectedValues.size }}
+                        <Badge v-if="selectedValues.size > 2" variant="secondary" class="rounded-sm px-1 font-normal">
+                            {{ selectedValues.size }} selected
                         </Badge>
+
                         <template v-else>
                             <Badge v-for="option in options
                                 .filter((option) => selectedValues.has(option.value))" :key="option.value" variant="secondary" class="rounded-sm px-1 font-normal">
