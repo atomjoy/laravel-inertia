@@ -65,6 +65,7 @@ const table = useVueTable({
 	enableRowSelection: true,
 	rowCount: props.data?.total ?? 0,
 	pageCount: props.data?.last_page ?? 1,
+	// enableMultiRowSelection: true,
 	// enableRowSelection: row => row.original.age > 18, //only enable row selection for adults
 	// enableMultiRowSelection: false, //only allow a single row to be selected at once
 	initialState: {
@@ -115,6 +116,8 @@ const table = useVueTable({
 		columnFilters.value = typeof updaterOrValue === 'function' ? updaterOrValue(columnFilters.value) : updaterOrValue;
 		// Refresh data amd move to first page
 		table.resetPageIndex()
+		// Reset selection
+		rowSelection.value = {}
 		// console.log(filters, table.getRowCount(), table.getPageCount(), props.data?.last_page, table.getState().pagination.pageIndex);
 	}, 600),
 	onSortingChange: throttle((updaterOrValue) => {
@@ -299,6 +302,11 @@ watch(props, (n) => {
 
 		<!-- <DataTablePagination :table="table" :last_page="props.data?.last_page ?? 0" /> -->
 
-		<DataTablePaginationNumbers :table="table" :total="props.data?.total" :last-page="props.data?.last_page"/>
+		<DataTablePaginationNumbers
+			:table="table"
+			:total="props.data?.total"
+			:last-page="props.data?.last_page"
+			:selected-rows="Object.entries(rowSelection).length"
+		/>
 	</div>
 </template>

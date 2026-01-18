@@ -1,6 +1,6 @@
-<script setup lang="ts" generic="TData">
+<script setup lang="ts" generic="TData, T">
 import { Button } from '@/components/ui/button';
-import type { Table } from '@tanstack/vue-table';
+import type { RowSelectionState, Table } from '@tanstack/vue-table';
 import {
 	ChevronLeft,
 	ChevronRight,
@@ -28,15 +28,16 @@ const pageSizes = [10, 15, 25, 50, 100];
 const props = defineProps<{
 	total: number,
 	lastPage: number,
-	table: Table<TData>
+	table: Table<TData>,
+	selectedRows: number,
 }>()
 </script>
 
 <template>
-<div class="flex items-center justify-between mt-4">
+<div class="flex flex-col items-center mt-4 lg:flex-row gap-2">
 	<div class="flex-1 text-left text-sm text-muted-foreground">
-		{{ table.getFilteredSelectedRowModel().rows.length }} of
-		{{ table.getFilteredRowModel().rows.length }} row(s) selected.
+		{{ table.getFilteredSelectedRowModel().rows.length }} of {{ table.getFilteredRowModel().rows.length }} page row(s) selected.
+		<span v-if="props.selectedRows > 0">({{ props.selectedRows ?? 0 }} of {{ props.total }} total row(s) selected).</span>
 	</div>
 	<div class="flex items-center space-x-6 lg:space-x-8">
   		<div class="flex flex-col gap-6">
