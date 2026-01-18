@@ -23,6 +23,7 @@ import { Slider } from '@/components/ui/slider'
 import throttle from 'lodash/throttle'
 import debounce from 'lodash/debounce'
 import DatePicker from '@/components/payments/DatePicker.vue';
+import Paginate from '@/components/payments/Pagination.vue';
 
 // Page url
 const table_request_url = 'payments';
@@ -296,6 +297,8 @@ watch(props, (n) => {
 			</Table>
 		</div>
 
-		<DataTablePagination :table="table" :last_page="props.data?.last_page ?? 0" />
+		<!-- <DataTablePagination :table="table" :last_page="props.data?.last_page ?? 0" /> -->
+
+		<Paginate :table="table" :per-page="pagination.pageSize" :total="props.data?.total" :last-page="props.data?.last_page" :default-page="pagination.pageIndex + 1"/>
 	</div>
 </template>
