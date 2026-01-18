@@ -108,16 +108,19 @@ const table = useVueTable({
   	getFacetedUniqueValues: getFacetedUniqueValues(),
   	getFacetedMinMaxValues: getFacetedMinMaxValues(),
 	getPaginationRowModel: getPaginationRowModel(), // Not required here
+	onExpandedChange: (updaterOrValue) => valueUpdater(updaterOrValue, expanded),
 	onColumnVisibilityChange: (updaterOrValue) => valueUpdater(updaterOrValue, columnVisibility),
 	onRowSelectionChange: (updaterOrValue) => valueUpdater(updaterOrValue, rowSelection),
-	onExpandedChange: (updaterOrValue) => valueUpdater(updaterOrValue, expanded),
 	// Throttle or debounce requests
 	onColumnFiltersChange: throttle((updaterOrValue) => {
 		columnFilters.value = typeof updaterOrValue === 'function' ? updaterOrValue(columnFilters.value) : updaterOrValue;
+
 		// Refresh data amd move to first page
 		table.resetPageIndex()
-		// Reset selection
-		rowSelection.value = {}
+
+		// Reset selection after filtering
+		// rowSelection.value = {}
+
 		// console.log(filters, table.getRowCount(), table.getPageCount(), props.data?.last_page, table.getState().pagination.pageIndex);
 	}, 600),
 	onSortingChange: throttle((updaterOrValue) => {
