@@ -7,12 +7,12 @@ import { filter_status } from '@/components/payments/types';
 import { columns } from '@/components/payments/columns';
 import { valueUpdater } from '@/components/ui/table/utils';
 import { router } from '@inertiajs/vue3';
-import { ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { ChevronDown } from 'lucide-vue-next';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import type { DateValue } from '@internationalized/date'
-import { DateFormatter, getLocalTimeZone, today } from '@internationalized/date'
+import { DateFormatter, getLocalTimeZone, today, CalendarDate, fromDate, } from '@internationalized/date'
 import { CalendarIcon } from 'lucide-vue-next'
 import { cn } from '@/lib/utils'
 import { Calendar } from '@/components/ui/calendar'
@@ -36,6 +36,7 @@ const props = defineProps({
 });
 
 const filter_toolbar = [filter_status];
+const email_filter = ref('')
 const slider = ref([0,props.amount_max ?? 10000])
 const expanded = ref<ExpandedState>({});
 const rowSelection = ref<RowSelectionState>({});
@@ -157,15 +158,20 @@ const table = useVueTable({
 });
 
 // Date picker
-const datePlaceholder = today(getLocalTimeZone())
 const fdate = ref<DateValue>()
 const tdate = ref<DateValue>()
+const datePlaceholder = today(getLocalTimeZone())
 const df = new DateFormatter('en-US', {
 	dateStyle: 'short'
 })
 
 watch(props, (n) => {
-	console.log("Props", n);
+	// console.log("Props", n);
+})
+
+onMounted(() => {
+	// let params = new URLSearchParams(location.search)
+	// console.log(Array.from(params.entries()), params.get('amount[1]'));
 })
 </script>
 
@@ -178,7 +184,11 @@ watch(props, (n) => {
 			<p class="text-muted-foreground">Here's a list of your payments for this year.</p>
 		</div>
 
-		<div class="flex flex-col my-2 lg:flex-row gap-2">
+		<div class="filter-errors">
+			<div class="filter-error py-1 text-sm text-red-400" v-for="err in props.filter_errors">{{ err[0] }}</div>
+		</div>
+
+		<div class="w-full flex flex-col my-2 lg:flex-row gap-2">
 			<div class="date-box flex">
 				<Popover v-slot="{ close }">
 					<PopoverTrigger as-child>
@@ -232,7 +242,7 @@ watch(props, (n) => {
 			<div class="filter-box flex">
 				<Input
 					class="w-full h-9 min-w-50 max-w-50 mr-2" placeholder="Filter emails"
-					:model-value="table.getColumn('email')?.getFilterValue() as string"
+					:model-value="email_filter"
 					@update:model-value="table.getColumn('email')?.setFilterValue($event)"
 				/>
 

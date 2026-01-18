@@ -97,7 +97,7 @@ class PaymentController extends Controller
 				'data' => $payload,
 				'amount_max' => $amount_max ?? 10000,
 				'filter' => $filters,
-				'filter_errors' => $validator->fails() ? $validator->errors() : null,
+				'filter_errors' => $validator->fails() ? $validator->errors()->toArray() : [],
 				// 'json' => new JsonResponse(['key' => 'value']),
 				// 'users' => User::all()->map(fn($user) => [
 				//     'id' => $user->id,
