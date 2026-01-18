@@ -299,6 +299,6 @@ watch(props, (n) => {
 
 		<!-- <DataTablePagination :table="table" :last_page="props.data?.last_page ?? 0" /> -->
 
-		<Paginate :table="table" :per-page="pagination.pageSize" :total="props.data?.total" :last-page="props.data?.last_page" :default-page="pagination.pageIndex + 1"/>
+		<Paginate :table="table" :total="props.data?.total" :last-page="props.data?.last_page"/>
 	</div>
 </template>

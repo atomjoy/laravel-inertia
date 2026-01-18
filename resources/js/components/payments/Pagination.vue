@@ -26,8 +26,6 @@ const pageSizes = [10, 15, 25, 50, 100];
 
 const props = defineProps<{
 	total: number,
-	perPage: number,
-	defaultPage: number,
 	lastPage: number,
 	table: any
 }>()
@@ -41,7 +39,7 @@ const props = defineProps<{
 	</div>
 	<div class="flex items-center space-x-6 lg:space-x-8">
   		<div class="flex flex-col gap-6">
-			<Pagination v-slot="{ page }" :page="props.table.getState().pagination.pageIndex + 1" :items-per-page="props.perPage" :total="props.total" :default-page="props.defaultPage">
+			<Pagination v-slot="{ page }" :page="props.table.getState().pagination.pageIndex + 1" :items-per-page="props.table.getState().pagination.pageSize" :total="props.total" :default-page="props.table.getState().pagination.pageIndex + 1">
 			<PaginationContent v-slot="{ items }">
 				<div class="flex items-center space-x-2 mr-2">
 					<p class="text-sm font-medium">Rows per page</p>
