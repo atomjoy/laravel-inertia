@@ -7,7 +7,7 @@ import { filter_status } from '@/components/payments/types';
 import { columns } from '@/components/payments/columns';
 import { valueUpdater } from '@/components/ui/table/utils';
 import { router } from '@inertiajs/vue3';
-import { onBeforeMount, ref, watch } from 'vue';
+import { onBeforeMount, onMounted, ref, watch } from 'vue';
 import { ChevronDown } from 'lucide-vue-next';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -75,7 +75,8 @@ const table = useVueTable({
 	// enableMultiRowSelection: false, //only allow a single row to be selected at once
 	initialState: {
 		pagination: {
-			pageIndex: props.data?.current_page - 1,
+			// pageIndex: props.data?.current_page - 1,
+			pageIndex: 0,
 			pageSize: props.data?.per_page,
 		}
 	},
@@ -174,19 +175,18 @@ const df = new DateFormatter('en-US', {
 // 	console.log("Props", n);
 // })
 
-onBeforeMount(() => {
+onMounted(() => {
 	console.log("Props mounted", props);
-
 	// Get url query params
 	let params = new URLSearchParams(location.search)
 	// console.log(Array.from(params.entries()), params.get('amount[1]'));
 
 	// Email fliter
 	email_filter.value = params.get('email') as string
-	columnFilters.value.push({
-		id: "amount",
-		value: email_filter.value
-	})
+	// columnFilters.value.push({
+	// 	id: "amount",
+	// 	value: email_filter.value
+	// })
 	table.getColumn('email')?.setFilterValue(email_filter);
 
 	// Amount filter
@@ -215,7 +215,6 @@ onBeforeMount(() => {
 		})
 	}
 	// Status filter here if you need ...
-	table.resetPageIndex()
 })
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -311,7 +310,10 @@ const breadcrumbs: BreadcrumbItem[] = [
 							<Input
 								class="w-full h-9 min-w-50 max-w-50 mr-2" placeholder="Filter emails"
 								:model-value="email_filter"
-								@update:model-value="table.getColumn('email')?.setFilterValue($event)"
+								@update:model-value="($event) => {
+									table.getColumn('email')?.setFilterValue($event)
+									table.resetPageIndex()
+								}"
 							/>
 
 							<div v-for="filter in filter_toolbar" :key="filter.title" class="md:w-full mr-2 max-w-50">
