@@ -46,3 +46,14 @@ https://tanstack.com/query/latest/docs/framework/vue/guides/default-query-functi
 https://tanstack.com/query/latest/docs/framework/vue/guides/query-keys
 https://tanstack.com/table/latest/docs/framework/vue/guide/table-state
 ```
+
+## Dev
+
+```js
+// OK: Use this in table
+rowCount: props.data?.total ?? 0,
+
+// Error: When paginate from page url query param
+// (not refreshing pages after page={nr} in pagination).
+pageCount: props.data?.last_page ?? 1,
+```

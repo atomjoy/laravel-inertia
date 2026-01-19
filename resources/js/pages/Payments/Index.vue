@@ -69,14 +69,13 @@ const table = useVueTable({
 	manualSorting: true,
 	manualFiltering: true,
 	enableRowSelection: true,
-	pageCount: props.data?.last_page ?? 1,
 	rowCount: props.data?.total ?? 0,
+	// pageCount: props.data?.last_page ?? 1, // Error when paginate from page url query param !!!
 	// enableMultiRowSelection: true,
 	// enableRowSelection: row => row.original.age > 18, //only enable row selection for adults
 	// enableMultiRowSelection: false, //only allow a single row to be selected at once
 	initialState: {
 		pagination: {
-			// pageIndex: props.data?.current_page - 1,
 			pageIndex: 0,
 			pageSize: props.data?.per_page,
 		}
