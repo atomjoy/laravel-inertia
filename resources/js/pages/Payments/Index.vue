@@ -7,7 +7,7 @@ import { filter_status } from '@/components/payments/types';
 import { columns } from '@/components/payments/columns';
 import { valueUpdater } from '@/components/ui/table/utils';
 import { router } from '@inertiajs/vue3';
-import { onMounted, ref, watch } from 'vue';
+import { onBeforeMount, onMounted, ref, watch } from 'vue';
 import { ChevronDown } from 'lucide-vue-next';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -39,11 +39,11 @@ const email_filter = ref('')
 const slider = ref([0,props.amount_max ?? 10000])
 const expanded = ref<ExpandedState>({});
 const rowSelection = ref<RowSelectionState>({});
+const columnFilters = ref<ColumnFiltersState>([]);
 const columnVisibility = ref<VisibilityState>({
 	// hide column by default
 	// avatar: false,
 });
-const columnFilters = ref<ColumnFiltersState>([]);
 const sorting = ref<SortingState>([
 	{
 		id: 'id',
@@ -149,6 +149,7 @@ const table = useVueTable({
 				per_page: pagination.value.pageSize,
 				sort_field: sorting.value[0]?.id,
 				sort_direction: sorting.value.length == 0 ? undefined : sorting.value[0]?.desc ? 'desc' : 'asc',
+				amount: slider.value,
 				...filters,
 			},
 			{ preserveState: true, preserveScroll: true },
@@ -157,20 +158,50 @@ const table = useVueTable({
 });
 
 // Date picker
+const datePlaceholder = today(getLocalTimeZone())
 const fdate = ref<DateValue>()
 const tdate = ref<DateValue>()
-const datePlaceholder = today(getLocalTimeZone())
 const df = new DateFormatter('en-US', {
 	dateStyle: 'short'
 })
 
-watch(props, (n) => {
-	// console.log("Props", n);
-})
+// watch(props, (n) => {
+// 	console.log("Props", n);
+// })
 
 onMounted(() => {
-	// let params = new URLSearchParams(location.search)
+	console.log("Props mounted", props);
+
+	// Get url query params
+	let params = new URLSearchParams(location.search)
 	// console.log(Array.from(params.entries()), params.get('amount[1]'));
+
+	// Email fliter
+	email_filter.value = params.get('email') as string
+	table.getColumn('email')?.setFilterValue(email_filter);
+
+	// Amount filter
+	let a0 = parseFloat(params.get('amount[0]') as string)
+	let a1 = parseFloat(params.get('amount[1]') as string)
+	if (a0 >= 0 && a1 > a0) {
+		slider.value = [a0, a1]
+		table.getColumn('amount')?.setFilterValue([a0, a1]);
+	}
+
+	// Date range filter
+	let d0 = new Date(params.get('created_at[0]') as string)
+	let d1 = new Date(params.get('created_at[1]') as string)
+	if (params.get('created_at[0]') && params.get('created_at[1]')) {
+		let c0 = new CalendarDate(d0.getFullYear(), d0.getMonth() + 1, d0.getDate())
+		let c1 = new CalendarDate(d1.getFullYear(), d1.getMonth() + 1, d1.getDate())
+		fdate.value = c0
+		tdate.value = c1
+		columnFilters.value.push({
+			id: "created_at",
+			value: [c0.toString(), c1.toString()]
+		})
+	}
+	// Status filter here if you need ...
 })
 </script>
 
