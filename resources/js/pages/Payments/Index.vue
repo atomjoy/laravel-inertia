@@ -178,6 +178,10 @@ onBeforeMount(() => {
 
 	// Email fliter
 	email_filter.value = params.get('email') as string
+	columnFilters.value.push({
+		id: "amount",
+		value: email_filter.value
+	})
 	table.getColumn('email')?.setFilterValue(email_filter);
 
 	// Amount filter
@@ -185,6 +189,10 @@ onBeforeMount(() => {
 	let a1 = parseFloat(params.get('amount[1]') as string)
 	if (a0 >= 0 && a1 > a0) {
 		slider.value = [a0, a1]
+		columnFilters.value.push({
+			id: "amount",
+			value: [a0.toString(), a1.toString()]
+		})
 		table.getColumn('amount')?.setFilterValue([a0, a1]);
 	}
 
