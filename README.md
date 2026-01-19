@@ -57,3 +57,15 @@ rowCount: props.data?.total ?? 0,
 // (not refreshing pages after page={nr} in pagination).
 pageCount: props.data?.last_page ?? 1,
 ```
+
+### Git
+
+```sh
+# Add tag
+git tag 1.0
+# With comment
+git tag <tagname> -a
+# Push to repo
+git push origin --tags
+git push origin <tagname>
+```
