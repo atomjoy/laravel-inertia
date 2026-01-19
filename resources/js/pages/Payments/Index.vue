@@ -169,7 +169,7 @@ const df = new DateFormatter('en-US', {
 // 	console.log("Props", n);
 // })
 
-onMounted(() => {
+onBeforeMount(() => {
 	console.log("Props mounted", props);
 
 	// Get url query params
@@ -202,6 +202,7 @@ onMounted(() => {
 		})
 	}
 	// Status filter here if you need ...
+	table.resetPageIndex()
 })
 </script>
 
