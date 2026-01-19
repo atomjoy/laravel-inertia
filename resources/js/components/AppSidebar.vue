@@ -11,12 +11,12 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { dashboard } from '@/routes';
-import { users } from '@/routes';
+import { dashboard, users } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import { BookOpen, Folder, LayoutGrid, Users } from 'lucide-vue-next';
+import { BookOpen, Folder, LayoutGrid, Users, Coins } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
+import payments from '@/routes/payments';
 
 const mainNavItems: NavItem[] = [
     {
@@ -28,6 +28,11 @@ const mainNavItems: NavItem[] = [
         title: 'Users',
         href: users(),
         icon: Users,
+    },
+    {
+        title: 'Payments',
+		href: payments.index(),
+        icon: Coins,
     }
 ];
 

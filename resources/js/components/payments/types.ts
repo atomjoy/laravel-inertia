@@ -58,7 +58,7 @@ export const payments: Payment[] = [
 		amount: 10,
 		status: 'success',
 		email: 'm@example.com',
-		avatar: '/default/avatar.webp',
+		avatar: '/default/avatar/avatar.webp',
 		name: 'Damian Bigos',
 		created_at: '2026-01-03 13:25:11'
 	},
@@ -67,7 +67,7 @@ export const payments: Payment[] = [
 		amount: 20,
 		status: 'failed',
 		email: 'example@gmail.com',
-		avatar: '/default/man.webp',
+		avatar: '/default/avatar/man.webp',
 		name: 'Mark Drumb',
 		created_at: '2026-01-11 13:25:11'
 	},
@@ -76,7 +76,7 @@ export const payments: Payment[] = [
 		amount: 30,
 		status: 'pending',
 		email: 'm@example.com',
-		avatar: '/default/woman.webp',
+		avatar: '/default/avatar/woman.webp',
 		name: 'Max Gold',
 		created_at: '2026-01-08 13:25:11'
 	},
@@ -85,7 +85,7 @@ export const payments: Payment[] = [
 		amount: 45,
 		status: 'processing',
 		email: 'example@gmail.com',
-		avatar: '/default/zebra.webp',
+		avatar: '/default/avatar/zebra.webp',
 		name: 'Stanley Brave',
 		created_at: '2026-01-03 13:25:11'
 	},
@@ -94,7 +94,7 @@ export const payments: Payment[] = [
 		amount: 100,
 		status: 'success',
 		email: 'm@example.com',
-		avatar: '/default/donkey.webp',
+		avatar: '/default/avatar/donkey.webp',
 		name: 'Mary Bigel',
 		created_at: '2026-01-10 13:25:11'
 	},
@@ -103,7 +103,7 @@ export const payments: Payment[] = [
 		amount: 125,
 		status: 'processing',
 		email: 'example@gmail.com',
-		avatar: '/default/avatar.webp',
+		avatar: '/default/avatar/avatar.webp',
 		name: 'John Doe',
 		created_at: '2026-01-06 13:25:11'
 	},
@@ -112,7 +112,7 @@ export const payments: Payment[] = [
 		amount: 100,
 		status: 'pending',
 		email: 'm@example.com',
-		avatar: '/default/man.webp',
+		avatar: '/default/avatar/man.webp',
 		name: 'Ben Worm',
 		created_at: '2025-12-09 13:25:11'
 	},
@@ -121,7 +121,7 @@ export const payments: Payment[] = [
 		amount: 125,
 		status: 'success',
 		email: 'example@gmail.com',
-		avatar: '/default/woman.webp',
+		avatar: '/default/avatar/woman.webp',
 		name: 'Alice Worm',
 		created_at: '2025-11-21 21:25:11'
 	},
@@ -130,7 +130,7 @@ export const payments: Payment[] = [
 		amount: 100,
 		status: 'failed',
 		email: 'm@example.com',
-		avatar: '/default/zebra.webp',
+		avatar: '/default/avatar/zebra.webp',
 		name: 'Kate Broke',
 		created_at: '2025-12-09 16:25:11'
 	},
@@ -139,7 +139,7 @@ export const payments: Payment[] = [
 		amount: 125,
 		status: 'processing',
 		email: 'example@gmail.com',
-		avatar: '/default/avatar.webp',
+		avatar: '/default/avatar/avatar.webp',
 		name: 'Kate Moore',
 		created_at: '2025-08-29 10:25:11'
 	},
@@ -148,7 +148,7 @@ export const payments: Payment[] = [
 		amount: 10,
 		status: 'pending',
 		email: 'm@example.com',
-		avatar: '/default/donkey.webp',
+		avatar: '/default/avatar/donkey.webp',
 		name: 'Alex Moore',
 		created_at: '2026-01-16 13:25:11'
 	},
@@ -157,7 +157,7 @@ export const payments: Payment[] = [
 		amount: 15,
 		status: 'canceled',
 		email: 'ele@gmail.com',
-		avatar: '/default/avatar.webp',
+		avatar: '/default/avatar/avatar.webp',
 		name: 'Alex',
 		created_at: '2026-01-17 03:25:11'
 	},

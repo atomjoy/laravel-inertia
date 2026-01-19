@@ -1,17 +1,19 @@
 <script setup lang="ts" generic="TData, TValue">
+import AppLayout from '@/layouts/AppLayout.vue';
 import DataTablePagination from '@/components/payments/DataTableCustomPagination.vue';
 import DataTablePaginationNumbers from '@/components/payments/DataTablePaginationNumbers.vue';
 import Filter from '@/components/payments/Filter.vue';
-import type { PaginationState } from '@tanstack/vue-table';
 import { filter_status } from '@/components/payments/types';
 import { columns } from '@/components/payments/columns';
 import { valueUpdater } from '@/components/ui/table/utils';
 import { router } from '@inertiajs/vue3';
-import { onBeforeMount, onMounted, ref, watch } from 'vue';
+import { onBeforeMount, ref, watch } from 'vue';
 import { ChevronDown } from 'lucide-vue-next';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import type { DateValue } from '@internationalized/date'
+import { type PaginationState } from '@tanstack/vue-table';
+import { type DateValue } from '@internationalized/date'
+import { type BreadcrumbItem } from '@/types';
 import { DateFormatter, getLocalTimeZone, today, CalendarDate, fromDate, } from '@internationalized/date'
 import { CalendarIcon } from 'lucide-vue-next'
 import { cn } from '@/lib/utils'
@@ -23,6 +25,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Slider } from '@/components/ui/slider'
 import throttle from 'lodash/throttle'
 import debounce from 'lodash/debounce'
+import { PlusCircle } from 'lucide-vue-next';
+import { Head, Link } from '@inertiajs/vue3';
+import payments from '@/routes/payments';
 
 // Page url
 const table_request_url = 'payments';
@@ -212,153 +217,181 @@ onBeforeMount(() => {
 	// Status filter here if you need ...
 	table.resetPageIndex()
 })
+
+const breadcrumbs: BreadcrumbItem[] = [
+	{
+		title: 'Payments',
+		href: payments.index().url,
+	},
+];
 </script>
 
 <template>
-	<div class="full p-10">
-		<div class="rounded-md border mb-4 p-4" v-if="sorting">{{ sorting }} {{ rowSelection }} {{ columnFilters }} {{ props.filter_errors }}</div>
+	<Head title="Payments" />
 
-		<div class="flex flex-col gap-1">
-			<h2 class="text-2xl font-semibold tracking-tight">Payments</h2>
-			<p class="text-muted-foreground">Here's a list of your payments for this year.</p>
-		</div>
+	<AppLayout :breadcrumbs="breadcrumbs">
+		<div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
+			<div class="relative min-h-screen flex-1 rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border">
+				<div class="h-full flex-1 flex-col gap-6 p-5 md:flex">
+					<div class="rounded-md border mb-4 p-4" v-if="sorting">{{ sorting }} {{ rowSelection }} {{ columnFilters }} {{ props.filter_errors }}</div>
+					<div>
+						<div class="flex items-center justify-between gap-2">
+							<div class="flex flex-col gap-1">
+								<h2 class="text-2xl font-semibold tracking-tight">Payments</h2>
+								<p class="text-muted-foreground">Here's a list of your payments for this year.</p>
+							</div>
+							<div class="flex items-center gap-2">
+								<Link href="/payments">
+									<Button class="inline-flex cursor-pointer items-center justify-center gap-2" variant="outline"> <PlusCircle /> Create </Button>
+								</Link>
 
-		<div class="filter-errors">
-			<div class="filter-error py-1 text-sm text-red-400" v-for="err in props.filter_errors">{{ err[0] }}</div>
-		</div>
+								<span data-slot="avatar" class="relative flex size-8 shrink-0 overflow-hidden rounded-full h-9 w-9">
+									<img role="img" src="/default/avatar.webp" data-slot="avatar-image" class="aspect-square size-full" alt="Image">
+								</span>
+							</div>
+						</div>
 
-		<div class="w-full flex flex-col my-2 lg:flex-row gap-2">
-			<div class="date-box flex">
-				<Popover v-slot="{ close }">
-					<PopoverTrigger as-child>
-						<Button
-							variant="outline"
-							:class="cn('w-50 justify-start text-left font-normal mr-2', !fdate && 'text-muted-foreground')"
-						>
-							<CalendarIcon />
-							{{ fdate ? df.format(fdate.toDate(getLocalTimeZone())) : "Start date" }}
-						</Button>
-					</PopoverTrigger>
-					<PopoverContent class="w-auto p-0" align="start">
-						<Calendar
-							v-model="fdate"
-							:default-placeholder="datePlaceholder"
-							layout="month-and-year"
-							initial-focus
-							@update:model-value="() => {
-								table.getColumn('created_at')?.setFilterValue([fdate?.toString(), tdate?.toString()]);
-								close();
-							}
-							"
-						/>
-					</PopoverContent>
-				</Popover>
-				<Popover v-slot="{ close }">
-					<PopoverTrigger as-child>
-						<Button
-							variant="outline"
-							:class="cn('w-50 justify-start text-left font-normal', !tdate && 'text-muted-foreground')"
-						>
-							<CalendarIcon />
-							{{ tdate ? df.format(tdate.toDate(getLocalTimeZone())) : "End date" }}
-						</Button>
-					</PopoverTrigger>
-					<PopoverContent class="w-auto p-0" align="start">
-						<Calendar
-							v-model="tdate"
-							:default-placeholder="datePlaceholder"
-							layout="month-and-year"
-							initial-focus
-							@update:model-value="() => {
-								table.getColumn('created_at')?.setFilterValue([fdate?.toString(), tdate?.toString()]);
-								close();
-							}
-							"
-						/>
-					</PopoverContent>
-				</Popover>
-			</div>
-			<div class="filter-box flex">
-				<Input
-					class="w-full h-9 min-w-50 max-w-50 mr-2" placeholder="Filter emails"
-					:model-value="email_filter"
-					@update:model-value="table.getColumn('email')?.setFilterValue($event)"
-				/>
+						<div class="filter-errors">
+							<div class="filter-error py-1 text-sm text-red-400" v-for="err in props.filter_errors">{{ err[0] }}</div>
+						</div>
+					</div>
 
-				<div v-for="filter in filter_toolbar" :key="filter.title" class="md:w-full mr-2 max-w-50">
-					<Filter :column="table.getColumn(filter.column)" :title="filter.title" :options="filter.data"></Filter>
+					<div class="w-full flex flex-col my-2 lg:flex-row gap-2">
+						<div class="date-box flex">
+							<Popover v-slot="{ close }">
+								<PopoverTrigger as-child>
+									<Button
+										variant="outline"
+										:class="cn('w-50 justify-start text-left font-normal mr-2', !fdate && 'text-muted-foreground')"
+									>
+										<CalendarIcon />
+										{{ fdate ? df.format(fdate.toDate(getLocalTimeZone())) : "Start date" }}
+									</Button>
+								</PopoverTrigger>
+								<PopoverContent class="w-auto p-0" align="start">
+									<Calendar
+										v-model="fdate"
+										:default-placeholder="datePlaceholder"
+										layout="month-and-year"
+										initial-focus
+										@update:model-value="() => {
+											table.getColumn('created_at')?.setFilterValue([fdate?.toString(), tdate?.toString()]);
+											close();
+										}
+										"
+									/>
+								</PopoverContent>
+							</Popover>
+							<Popover v-slot="{ close }">
+								<PopoverTrigger as-child>
+									<Button
+										variant="outline"
+										:class="cn('w-50 justify-start text-left font-normal', !tdate && 'text-muted-foreground')"
+									>
+										<CalendarIcon />
+										{{ tdate ? df.format(tdate.toDate(getLocalTimeZone())) : "End date" }}
+									</Button>
+								</PopoverTrigger>
+								<PopoverContent class="w-auto p-0" align="start">
+									<Calendar
+										v-model="tdate"
+										:default-placeholder="datePlaceholder"
+										layout="month-and-year"
+										initial-focus
+										@update:model-value="() => {
+											table.getColumn('created_at')?.setFilterValue([fdate?.toString(), tdate?.toString()]);
+											close();
+										}
+										"
+									/>
+								</PopoverContent>
+							</Popover>
+						</div>
+						<div class="filter-box flex">
+							<Input
+								class="w-full h-9 min-w-50 max-w-50 mr-2" placeholder="Filter emails"
+								:model-value="email_filter"
+								@update:model-value="table.getColumn('email')?.setFilterValue($event)"
+							/>
+
+							<div v-for="filter in filter_toolbar" :key="filter.title" class="md:w-full mr-2 max-w-50">
+								<Filter :column="table.getColumn(filter.column)" :title="filter.title" :options="filter.data"></Filter>
+							</div>
+						</div>
+
+						<div class="w-full">
+							<div class="text-xs">Price range ($<span class="font-medium tabular-nums">{{ slider[0] }}</span> - <span class="font-medium tabular-nums">{{ slider[1] }}</span>).</div>
+							<Slider
+								v-model="slider"
+								@update:model-value="table.getColumn('amount')?.setFilterValue($event)"
+								:min="0"
+								:max="amount_max"
+								:step="0.5"
+								class="mt-2 w-full mb-4"
+								aria-label="Price Range"
+							/>
+						</div>
+
+						<DropdownMenu>
+							<DropdownMenuTrigger as-child>
+								<Button variant="outline" class="ml-auto"> Columns <ChevronDown class="ml-2 h-4 w-4" /> </Button>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent align="end">
+								<DropdownMenuCheckboxItem
+									v-for="column in table.getAllColumns().filter((column) => column.getCanHide())"
+									:key="column.id"
+									class="capitalize"
+									:modelValue="column.getIsVisible()"
+									@update:modelValue="
+										(value: any) => {
+											column.toggleVisibility(!!value);
+										}
+									"
+								>
+									{{ column.id }}
+								</DropdownMenuCheckboxItem>
+							</DropdownMenuContent>
+						</DropdownMenu>
+					</div>
+
+					<div class="rounded-md border">
+						<Table>
+							<TableHeader>
+								<TableRow v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
+									<TableHead v-for="header in headerGroup.headers" :key="header.id">
+										<FlexRender v-if="!header.isPlaceholder" :render="header.column.columnDef.header" :props="header.getContext()" />
+									</TableHead>
+								</TableRow>
+							</TableHeader>
+
+							<TableBody>
+								<template v-if="table.getRowModel().rows?.length">
+									<TableRow v-for="row in table.getRowModel().rows" :key="row.id" :data-state="row.getIsSelected() ? 'selected' : undefined">
+										<TableCell v-for="cell in row.getVisibleCells()" :key="cell.id">
+											<FlexRender :render="cell.column.columnDef.cell" :props="cell.getContext()" />
+										</TableCell>
+									</TableRow>
+								</template>
+								<template v-else>
+									<TableRow>
+										<TableCell :colspan="columns.length" class="h-24 text-center"> No results. </TableCell>
+									</TableRow>
+								</template>
+							</TableBody>
+						</Table>
+					</div>
+
+					<!-- <DataTablePagination :table="table" :last_page="props.data?.last_page ?? 0" /> -->
+
+					<DataTablePaginationNumbers
+						:table="table"
+						:total="props.data?.total"
+						:last-page="props.data?.last_page"
+						:selected-rows="Object.entries(rowSelection).length"
+					/>
+
 				</div>
 			</div>
-
-			<div class="w-full">
-				<div class="text-xs">Price range ($<span class="font-medium tabular-nums">{{ slider[0] }}</span> - <span class="font-medium tabular-nums">{{ slider[1] }}</span>).</div>
-				<Slider
-					v-model="slider"
-					@update:model-value="table.getColumn('amount')?.setFilterValue($event)"
-					:min="0"
-					:max="amount_max"
-					:step="0.5"
-					class="mt-2 w-full mb-4"
-					aria-label="Price Range"
-				/>
-			</div>
-
-			<DropdownMenu>
-				<DropdownMenuTrigger as-child>
-					<Button variant="outline" class="ml-auto"> Columns <ChevronDown class="ml-2 h-4 w-4" /> </Button>
-				</DropdownMenuTrigger>
-				<DropdownMenuContent align="end">
-					<DropdownMenuCheckboxItem
-						v-for="column in table.getAllColumns().filter((column) => column.getCanHide())"
-						:key="column.id"
-						class="capitalize"
-						:modelValue="column.getIsVisible()"
-						@update:modelValue="
-							(value: any) => {
-								column.toggleVisibility(!!value);
-							}
-						"
-					>
-						{{ column.id }}
-					</DropdownMenuCheckboxItem>
-				</DropdownMenuContent>
-			</DropdownMenu>
 		</div>
-
-		<div class="rounded-md border">
-			<Table>
-				<TableHeader>
-					<TableRow v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
-						<TableHead v-for="header in headerGroup.headers" :key="header.id">
-							<FlexRender v-if="!header.isPlaceholder" :render="header.column.columnDef.header" :props="header.getContext()" />
-						</TableHead>
-					</TableRow>
-				</TableHeader>
-
-				<TableBody>
-					<template v-if="table.getRowModel().rows?.length">
-						<TableRow v-for="row in table.getRowModel().rows" :key="row.id" :data-state="row.getIsSelected() ? 'selected' : undefined">
-							<TableCell v-for="cell in row.getVisibleCells()" :key="cell.id">
-								<FlexRender :render="cell.column.columnDef.cell" :props="cell.getContext()" />
-							</TableCell>
-						</TableRow>
-					</template>
-					<template v-else>
-						<TableRow>
-							<TableCell :colspan="columns.length" class="h-24 text-center"> No results. </TableCell>
-						</TableRow>
-					</template>
-				</TableBody>
-			</Table>
-		</div>
-
-		<!-- <DataTablePagination :table="table" :last_page="props.data?.last_page ?? 0" /> -->
-
-		<DataTablePaginationNumbers
-			:table="table"
-			:total="props.data?.total"
-			:last-page="props.data?.last_page"
-			:selected-rows="Object.entries(rowSelection).length"
-		/>
-	</div>
+	</AppLayout>
 </template>
