@@ -55,9 +55,10 @@ const sorting = ref<SortingState>([
 		desc: true, // sort by age in descending order by default
 	},
 ]);
+
 const pagination = ref<PaginationState>({
 	pageIndex: props.data?.current_page - 1,
-  	pageSize: props.data?.per_page,
+	pageSize: props.data?.per_page,
 });
 
 // Update table state after on change events
@@ -68,8 +69,8 @@ const table = useVueTable({
 	manualSorting: true,
 	manualFiltering: true,
 	enableRowSelection: true,
-	rowCount: props.data?.total ?? 0,
 	pageCount: props.data?.last_page ?? 1,
+	rowCount: props.data?.total ?? 0,
 	// enableMultiRowSelection: true,
 	// enableRowSelection: row => row.original.age > 18, //only enable row selection for adults
 	// enableMultiRowSelection: false, //only allow a single row to be selected at once
@@ -121,6 +122,8 @@ const table = useVueTable({
 	onColumnFiltersChange: throttle((updaterOrValue) => {
 		columnFilters.value = typeof updaterOrValue === 'function' ? updaterOrValue(columnFilters.value) : updaterOrValue;
 
+		console.log("Kurwa mać !!!!");
+
 		// Refresh data amd move to first page
 		table.resetPageIndex()
 
@@ -131,6 +134,7 @@ const table = useVueTable({
 	}, 600),
 	onSortingChange: throttle((updaterOrValue) => {
 		sorting.value = typeof updaterOrValue === 'function' ? updaterOrValue(sorting.value) : updaterOrValue;
+
 		// Refresh data amd move to first page
 		table.resetPageIndex()
 	}, 600),
@@ -177,17 +181,19 @@ const df = new DateFormatter('en-US', {
 
 onMounted(() => {
 	console.log("Props mounted", props);
+
 	// Get url query params
 	let params = new URLSearchParams(location.search)
 	// console.log(Array.from(params.entries()), params.get('amount[1]'));
 
+	// TODO: Add status filter here if you need one.
+
 	// Email fliter
 	email_filter.value = params.get('email') as string
-	// columnFilters.value.push({
-	// 	id: "amount",
-	// 	value: email_filter.value
-	// })
-	table.getColumn('email')?.setFilterValue(email_filter);
+	columnFilters.value.push({
+		id: "email",
+		value: email_filter.value
+	})
 
 	// Amount filter
 	let a0 = parseFloat(params.get('amount[0]') as string)
@@ -198,15 +204,14 @@ onMounted(() => {
 			id: "amount",
 			value: [a0.toString(), a1.toString()]
 		})
-		table.getColumn('amount')?.setFilterValue([a0, a1]);
 	}
 
 	// Date range filter
 	let d0 = new Date(params.get('created_at[0]') as string)
 	let d1 = new Date(params.get('created_at[1]') as string)
+	let c0 = new CalendarDate(d0.getFullYear(), d0.getMonth() + 1, d0.getDate())
+	let c1 = new CalendarDate(d1.getFullYear(), d1.getMonth() + 1, d1.getDate())
 	if (params.get('created_at[0]') && params.get('created_at[1]')) {
-		let c0 = new CalendarDate(d0.getFullYear(), d0.getMonth() + 1, d0.getDate())
-		let c1 = new CalendarDate(d1.getFullYear(), d1.getMonth() + 1, d1.getDate())
 		fdate.value = c0
 		tdate.value = c1
 		columnFilters.value.push({
@@ -214,7 +219,11 @@ onMounted(() => {
 			value: [c0.toString(), c1.toString()]
 		})
 	}
-	// Status filter here if you need ...
+
+	// Refresh filter data (enough for one column) !!!
+	table.getColumn('email')?.setFilterValue(email_filter.value);
+	// table.getColumn('amount')?.setFilterValue([a0, a1]);
+	// table.getColumn('created_at')?.setFilterValue([c0.toString(), c1.toString()]);
 })
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -310,10 +319,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 							<Input
 								class="w-full h-9 min-w-50 max-w-50 mr-2" placeholder="Filter emails"
 								:model-value="email_filter"
-								@update:model-value="($event) => {
-									table.getColumn('email')?.setFilterValue($event)
-									table.resetPageIndex()
-								}"
+								@update:model-value="table.getColumn('email')?.setFilterValue($event)"
 							/>
 
 							<div v-for="filter in filter_toolbar" :key="filter.title" class="md:w-full mr-2 max-w-50">
