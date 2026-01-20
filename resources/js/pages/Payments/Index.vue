@@ -40,14 +40,9 @@ const props = defineProps({
 	sort: Object,
 });
 
-// const amount = ref(null)
-// const amount_start = ref(null)
-// const amount_end = ref(null)
-
 const filter_toolbar = [filter_status];
 const email = ref(props.filter?.email)
-const slider = ref(props.filter?.amount)
-// const slider = ref([0,props.amount_max ?? 10000])
+const amount = ref(props.filter?.amount)
 const expanded = ref<ExpandedState>({});
 const rowSelection = ref<RowSelectionState>({});
 const columnFilters = ref<ColumnFiltersState>([]);
@@ -179,9 +174,9 @@ const table = useVueTable({
 });
 
 // Date picker
-const datePlaceholder = today(getLocalTimeZone())
 const fdate = ref<DateValue>()
 const tdate = ref<DateValue>()
+const datePlaceholder = today(getLocalTimeZone())
 const df = new DateFormatter('en-US', { dateStyle: 'short' })
 let created_at = props.filter?.created_at ?? [datePlaceholder.subtract({days: 7}), datePlaceholder.add({ days: 1 })]
 let d0 = new Date(created_at[0] as string)
@@ -318,9 +313,9 @@ const breadcrumbs: BreadcrumbItem[] = [
 						</div>
 
 						<div class="w-full">
-							<div class="text-xs">Price range ($<span class="font-medium tabular-nums">{{ slider[0] }}</span> - <span class="font-medium tabular-nums">{{ slider[1] }}</span>).</div>
+							<div class="text-xs">Price range ($<span class="font-medium tabular-nums">{{ amount[0] }}</span> - <span class="font-medium tabular-nums">{{ amount[1] }}</span>).</div>
 							<Slider
-								v-model="slider"
+								v-model="amount"
 								@update:model-value="table.getColumn('amount')?.setFilterValue($event)"
 								:min="0"
 								:max="amount_max"

@@ -50,10 +50,10 @@ class PaymentController extends Controller
 		$filters = [];
 		$perPage = request()->integer('per_page', 10);
 		$email = request()->input('email', null);
-		$status = request()->input('status', null);
 		$amount = request()->input('amount', null);
-		$sort = request()->input('sort', null);
 		$created_at = request()->input('created_at', null);
+		$status = request()->input('status', null);
+		$sort = request()->input('sort', []);
 		$sortField = request()->input('sort_field', 'id');
 		$sortDirection = request()->input('sort_direction', 'desc');
 		$sortDirection == 'desc' ? $sortDirection = 'desc' : $sortDirection = 'asc';
