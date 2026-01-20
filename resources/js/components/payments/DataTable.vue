@@ -69,7 +69,7 @@ const table = useVueTable({
 		<div class="rounded-md border" v-if="sorting">{{ sorting }} {{ rowSelection }} {{ columnFilters }}</div>
 
 		<div class="flex items-center py-4">
-			<Input class="h-9 max-w-sm" placeholder="Filter emails..." :modelValue="table.getColumn('email')?.getFilterValue() as string" @update:modelValue="table.getColumn('email')?.setFilterValue($event)" />
+			<Input class="h-9 max-w-sm mr-2" placeholder="Filter emails..." :modelValue="table.getColumn('email')?.getFilterValue() as string" @update:modelValue="table.getColumn('email')?.setFilterValue($event)" />
 
 			<div v-for="filter in filter_toolbar" :key="filter.title">
 				<Filter :column="table.getColumn(filter.column)" :title="filter.title" :options="filter.data"></Filter>

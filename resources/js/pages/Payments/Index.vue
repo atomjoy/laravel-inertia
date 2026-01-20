@@ -7,7 +7,7 @@ import { filter_status } from '@/components/payments/types';
 import { columns } from '@/components/payments/columns';
 import { valueUpdater } from '@/components/ui/table/utils';
 import { router } from '@inertiajs/vue3';
-import { onBeforeMount, onMounted, ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { ChevronDown } from 'lucide-vue-next';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -35,27 +35,32 @@ const table_request_url = 'payments';
 const props = defineProps({
 	data: Object,
 	amount_max: Number,
-	filter: Array,
+	filter: Object,
 	filter_errors: Object,
+	sort: Object,
 });
 
+// const amount = ref(null)
+// const amount_start = ref(null)
+// const amount_end = ref(null)
+
 const filter_toolbar = [filter_status];
-const email_filter = ref('')
-const slider = ref([0,props.amount_max ?? 10000])
+const email = ref(props.filter?.email)
+const slider = ref(props.filter?.amount)
+// const slider = ref([0,props.amount_max ?? 10000])
 const expanded = ref<ExpandedState>({});
 const rowSelection = ref<RowSelectionState>({});
 const columnFilters = ref<ColumnFiltersState>([]);
+const sorting = ref<SortingState>([
+	{
+		id: 'id',
+		desc: true, // sort by id in descending order by default
+	}
+]);
 const columnVisibility = ref<VisibilityState>({
 	// hide column by default
 	// avatar: false,
 });
-const sorting = ref<SortingState>([
-	{
-		id: 'id',
-		desc: true, // sort by age in descending order by default
-	},
-]);
-
 const pagination = ref<PaginationState>({
 	pageIndex: props.data?.current_page - 1,
 	pageSize: props.data?.per_page,
@@ -121,8 +126,6 @@ const table = useVueTable({
 	onColumnFiltersChange: throttle((updaterOrValue) => {
 		columnFilters.value = typeof updaterOrValue === 'function' ? updaterOrValue(columnFilters.value) : updaterOrValue;
 
-		console.log("Kurwa mać !!!!");
-
 		// Refresh data amd move to first page
 		table.resetPageIndex()
 
@@ -150,7 +153,16 @@ const table = useVueTable({
       		}, {})
 		}
 
-		// Update backend here (required)
+		let sort = {};
+		if (sorting.value) {
+			sort = sorting.value.reduce((acc, obj) => {
+				// @ts-ignore
+        		acc[obj.id + '_desc'] = obj.desc
+        		return acc
+      		}, {})
+		}
+
+		// Update url query params here (required for server-side)
 		router.get(
 			table_request_url,
 			{
@@ -158,7 +170,7 @@ const table = useVueTable({
 				per_page: pagination.value.pageSize,
 				sort_field: sorting.value[0]?.id,
 				sort_direction: sorting.value.length == 0 ? undefined : sorting.value[0]?.desc ? 'desc' : 'asc',
-				amount: slider.value,
+				sort: sort,
 				...filters,
 			},
 			{ preserveState: true, preserveScroll: true },
@@ -170,60 +182,39 @@ const table = useVueTable({
 const datePlaceholder = today(getLocalTimeZone())
 const fdate = ref<DateValue>()
 const tdate = ref<DateValue>()
-const df = new DateFormatter('en-US', {
-	dateStyle: 'short'
+const df = new DateFormatter('en-US', { dateStyle: 'short' })
+let created_at = props.filter?.created_at ?? [datePlaceholder.subtract({days: 7}), datePlaceholder.add({ days: 1 })]
+let d0 = new Date(created_at[0] as string)
+let d1 = new Date(created_at[1] as string)
+fdate.value = new CalendarDate(d0.getFullYear(), d0.getMonth() + 1, d0.getDate())
+tdate.value = new CalendarDate(d1.getFullYear(), d1.getMonth() + 1, d1.getDate())
+columnFilters.value.push({
+	id: "created_at",
+	value: [fdate.value.toString(), tdate.value.toString()]
 })
 
-// watch(props, (n) => {
-// 	console.log("Props", n);
+watch(props, (n) => {
+	console.log("Props", n);
+})
+
+// onMounted(() => {
+// 	// Update filters from url query params (only sample)
+// 	let params = new URLSearchParams(location.search)
+// 	// console.log(Array.from(params.entries()), params.get('amount[1]'));
+
+// 	// Date range filter
+// 	let d0 = new Date(params.get('created_at[0]') as string)
+// 	let d1 = new Date(params.get('created_at[1]') as string)
+// 	fdate.value = new CalendarDate(d0.getFullYear(), d0.getMonth() + 1, d0.getDate())
+// 	tdate.value = new CalendarDate(d1.getFullYear(), d1.getMonth() + 1, d1.getDate())
+// 	if (params.get('created_at[0]') && params.get('created_at[1]')) {
+// 		columnFilters.value.push({
+// 			id: "created_at",
+// 			value: [fdate.value.toString(), tdate.value.toString()]
+// 		})
+// 	}
+// 	table.getColumn('created_at')?.setFilterValue(created_at);
 // })
-
-onMounted(() => {
-	console.log("Props mounted", props);
-
-	// Get url query params
-	let params = new URLSearchParams(location.search)
-	// console.log(Array.from(params.entries()), params.get('amount[1]'));
-
-	// TODO: Add status filter here if you need one.
-
-	// Email fliter
-	email_filter.value = params.get('email') as string
-	columnFilters.value.push({
-		id: "email",
-		value: email_filter.value
-	})
-
-	// Amount filter
-	let a0 = parseFloat(params.get('amount[0]') as string)
-	let a1 = parseFloat(params.get('amount[1]') as string)
-	if (a0 >= 0 && a1 > a0) {
-		slider.value = [a0, a1]
-		columnFilters.value.push({
-			id: "amount",
-			value: [a0.toString(), a1.toString()]
-		})
-	}
-
-	// Date range filter
-	let d0 = new Date(params.get('created_at[0]') as string)
-	let d1 = new Date(params.get('created_at[1]') as string)
-	let c0 = new CalendarDate(d0.getFullYear(), d0.getMonth() + 1, d0.getDate())
-	let c1 = new CalendarDate(d1.getFullYear(), d1.getMonth() + 1, d1.getDate())
-	if (params.get('created_at[0]') && params.get('created_at[1]')) {
-		fdate.value = c0
-		tdate.value = c1
-		columnFilters.value.push({
-			id: "created_at",
-			value: [c0.toString(), c1.toString()]
-		})
-	}
-
-	// Refresh filter data (enough for one column) !!!
-	table.getColumn('email')?.setFilterValue(email_filter.value);
-	// table.getColumn('amount')?.setFilterValue([a0, a1]);
-	// table.getColumn('created_at')?.setFilterValue([c0.toString(), c1.toString()]);
-})
 
 const breadcrumbs: BreadcrumbItem[] = [
 	{
@@ -245,7 +236,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 						<div class="flex items-center justify-between gap-2">
 							<div class="flex flex-col gap-1">
 								<h2 class="text-2xl font-semibold tracking-tight">Payments</h2>
-								<p class="text-muted-foreground">Here's a list of your payments for this year.</p>
+								<p class="text-muted-foreground">Here's a list of your payments for this month.</p>
 							</div>
 							<div class="flex items-center gap-2">
 								<Link href="/payments">
@@ -317,7 +308,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 						<div class="filter-box flex">
 							<Input
 								class="w-full h-9 min-w-50 max-w-50 mr-2" placeholder="Filter emails"
-								:model-value="email_filter"
+								:model-value="email"
 								@update:model-value="table.getColumn('email')?.setFilterValue($event)"
 							/>
 

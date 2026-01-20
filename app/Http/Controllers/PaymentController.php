@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Payment;
 use App\Http\Requests\StorePaymentRequest;
 use App\Http\Requests\UpdatePaymentRequest;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Validator;
@@ -51,15 +52,11 @@ class PaymentController extends Controller
 		$email = request()->input('email', null);
 		$status = request()->input('status', null);
 		$amount = request()->input('amount', null);
+		$sort = request()->input('sort', null);
 		$created_at = request()->input('created_at', null);
 		$sortField = request()->input('sort_field', 'id');
 		$sortDirection = request()->input('sort_direction', 'desc');
 		$sortDirection == 'desc' ? $sortDirection = 'desc' : $sortDirection = 'asc';
-
-		$filters[] = ['id' => 'status', 'value' => $status];
-		$filters[] = ['id' => 'amount', 'value' => $amount];
-		$filters[] = ['id' => 'email', 'value' => $email];
-		$filters[] = ['id' => 'created_at', 'value' => $created_at];
 
 		$amount_max = (int) ((Payment::max("amount") / 100) + 1);
 
@@ -85,6 +82,12 @@ class PaymentController extends Controller
 				}
 			})->orderBy($sortField, $sortDirection)->paginate(perPage: $perPage);
 
+		// Filtry
+		$filters['email'] = $email ?? '';
+		$filters['amount'] = $amount ?? [0, $amount_max ?? 10000];
+		$filters['status'] = $status;
+		$filters['created_at'] = $created_at ?? [Carbon::today()->format('Y-m') . '-01', Carbon::today()->addDay()->format('Y-m-d')];
+
 		if (request()->wantsJson()) {
 			return response()->json([
 				'payload' => $payload,
@@ -98,6 +101,7 @@ class PaymentController extends Controller
 				'amount_max' => $amount_max ?? 10000,
 				'filter' => $filters,
 				'filter_errors' => $validator->fails() ? $validator->errors()->toArray() : [],
+				'sort' => $sort,
 				// 'json' => new JsonResponse(['key' => 'value']),
 				// 'users' => User::all()->map(fn($user) => [
 				//     'id' => $user->id,
