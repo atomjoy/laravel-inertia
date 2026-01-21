@@ -41,7 +41,7 @@ const props = defineProps({
 });
 
 const filter_toolbar = [filter_status];
-const email = ref(props.filter?.email)
+const email = ref(props.filter?.email ?? '')
 const amount = ref(props.filter?.amount)
 const expanded = ref<ExpandedState>({});
 const rowSelection = ref<RowSelectionState>({});
