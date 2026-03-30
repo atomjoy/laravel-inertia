@@ -81,6 +81,9 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 
+// Display image from html
+// <img src="image/media/avatars/donkey.webp">
+
 // Image path media/avatars/donkey.webp
 // file in private/media/avatars/donkey.webp directory
 // for storage disk default settings (FILESYSTEM_DISK=local).
