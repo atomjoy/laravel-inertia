@@ -24,5 +24,8 @@ Route::get('users', function () {
 
 Route::resource('payments', PaymentController::class);
 
+// Display images
+require __DIR__ . '/images.php';
+
+// Settings
 require __DIR__ . '/settings.php';
-// require __DIR__ . '/images.php';
