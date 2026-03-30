@@ -7,7 +7,6 @@ use App\Http\Requests\StorePaymentRequest;
 use App\Http\Requests\UpdatePaymentRequest;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Date;
 use Inertia\Inertia;
@@ -26,6 +25,7 @@ class PaymentController extends Controller
 	 */
 	public function index(Request $request)
 	{
+		// Filters validation
 		$validator = Validator::make($request->all(), [
 			"amount"    => "sometimes|array|min:2",
 			"amount.*"  => "sometimes|numeric|distinct|min:0",
@@ -60,6 +60,10 @@ class PaymentController extends Controller
 
 		$amount_max = (int) ((Payment::max("amount") / 100) + 1);
 
+		if ($created_at == null) {
+			$created_at = [Carbon::today()->format('Y-m') . '-01', Carbon::today()->addDay()->format('Y-m-d')];
+		}
+
 		$payload =  Payment::query()
 			->when($status, function ($query, $status) {
 				if (is_array($status) && !empty($status)) {
@@ -82,11 +86,13 @@ class PaymentController extends Controller
 				}
 			})->orderBy($sortField, $sortDirection)->paginate(perPage: $perPage);
 
+		// dd($created_at);
+
 		// Filtry
 		$filters['email'] = $email ?? '';
 		$filters['amount'] = $amount ?? [0, $amount_max ?? 10000];
 		$filters['status'] = $status;
-		$filters['created_at'] = $created_at ?? [Carbon::today()->format('Y-m') . '-01', Carbon::today()->addDay()->format('Y-m-d')];
+		$filters['created_at'] = $created_at;
 
 		if (request()->wantsJson()) {
 			return response()->json([
@@ -102,14 +108,6 @@ class PaymentController extends Controller
 				'filter' => $filters,
 				'filter_errors' => $validator->fails() ? $validator->errors()->toArray() : [],
 				'sort' => $sort,
-				// 'json' => new JsonResponse(['key' => 'value']),
-				// 'users' => User::all()->map(fn($user) => [
-				//     'id' => $user->id,
-				//     'name' => $user->name,
-				//     'email' => $user->email,
-				//     // 'edit_url' => route('users.edit', $user),
-				// ]),
-				// 'create_url' => route('users.create'),
 			]);
 		}
 	}

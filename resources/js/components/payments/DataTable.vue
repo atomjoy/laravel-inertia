@@ -66,7 +66,7 @@ const table = useVueTable({
 
 <template>
 	<div class="space-y-4">
-		<div class="rounded-md border" v-if="sorting">{{ sorting }} {{ rowSelection }} {{ columnFilters }}</div>
+		<!-- <div class="rounded-md border" v-if="sorting">{{ sorting }} {{ rowSelection }} {{ columnFilters }}</div> -->
 
 		<div class="flex items-center py-4">
 			<Input class="h-9 max-w-sm mr-2" placeholder="Filter emails..." :modelValue="table.getColumn('email')?.getFilterValue() as string" @update:modelValue="table.getColumn('email')?.setFilterValue($event)" />

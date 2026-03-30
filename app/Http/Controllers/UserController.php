@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -19,6 +20,7 @@ class UserController extends Controller
 			//     // 'edit_url' => route('users.edit', $user),
 			// ]),
 			// 'create_url' => route('users.create'),
+			// 'json' => new JsonResponse(['key' => 'value']),
 		]);
 	}
 }

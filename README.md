@@ -64,7 +64,7 @@ pageCount: props.data?.last_page ?? 1,
 # Show tags
 git tag
 # Add tag
-git tag 1.0
+git tag 1.1
 # With comment
 git tag -a <tagname> -m "Your message here"
 # Push to repo

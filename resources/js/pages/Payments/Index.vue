@@ -29,8 +29,14 @@ import { PlusCircle } from 'lucide-vue-next';
 import { Head, Link } from '@inertiajs/vue3';
 import payments from '@/routes/payments';
 
-// Page url
 const table_request_url = 'payments';
+
+const breadcrumbs: BreadcrumbItem[] = [
+	{
+		title: 'Payments',
+		href: payments.index().url,
+	},
+];
 
 const props = defineProps({
 	data: Object,
@@ -61,19 +67,12 @@ const pagination = ref<PaginationState>({
 	pageSize: props.data?.per_page,
 });
 
-// Update table state after on change events
-// https://tanstack.com/table/latest/docs/framework/vue/guide/table-state
-// https://tanstack.com/table/latest/docs/guide/pagination#should-you-use-client-side-pagination
 const table = useVueTable({
 	manualPagination: true,
 	manualSorting: true,
 	manualFiltering: true,
 	enableRowSelection: true,
 	rowCount: props.data?.total ?? 0,
-	// pageCount: props.data?.last_page ?? 1, // Error when paginate from page url query param !!!
-	// enableMultiRowSelection: true,
-	// enableRowSelection: row => row.original.age > 18, //only enable row selection for adults
-	// enableMultiRowSelection: false, //only allow a single row to be selected at once
 	initialState: {
 		pagination: {
 			pageIndex: 0,
@@ -120,18 +119,15 @@ const table = useVueTable({
 	// Throttle or debounce requests
 	onColumnFiltersChange: throttle((updaterOrValue) => {
 		columnFilters.value = typeof updaterOrValue === 'function' ? updaterOrValue(columnFilters.value) : updaterOrValue;
-
 		// Refresh data amd move to first page
 		table.resetPageIndex()
-
 		// Reset selection after filtering
 		// rowSelection.value = {}
-
+		// Show in console
 		// console.log(filters, table.getRowCount(), table.getPageCount(), props.data?.last_page, table.getState().pagination.pageIndex);
 	}, 600),
 	onSortingChange: throttle((updaterOrValue) => {
 		sorting.value = typeof updaterOrValue === 'function' ? updaterOrValue(sorting.value) : updaterOrValue;
-
 		// Refresh data amd move to first page
 		table.resetPageIndex()
 	}, 600),
@@ -192,31 +188,24 @@ watch(props, (n) => {
 	console.log("Props", n);
 })
 
-// onMounted(() => {
-// 	// Update filters from url query params (only sample)
-// 	let params = new URLSearchParams(location.search)
-// 	// console.log(Array.from(params.entries()), params.get('amount[1]'));
-
-// 	// Date range filter
-// 	let d0 = new Date(params.get('created_at[0]') as string)
-// 	let d1 = new Date(params.get('created_at[1]') as string)
-// 	fdate.value = new CalendarDate(d0.getFullYear(), d0.getMonth() + 1, d0.getDate())
-// 	tdate.value = new CalendarDate(d1.getFullYear(), d1.getMonth() + 1, d1.getDate())
-// 	if (params.get('created_at[0]') && params.get('created_at[1]')) {
-// 		columnFilters.value.push({
-// 			id: "created_at",
-// 			value: [fdate.value.toString(), tdate.value.toString()]
-// 		})
-// 	}
-// 	table.getColumn('created_at')?.setFilterValue(created_at);
-// })
-
-const breadcrumbs: BreadcrumbItem[] = [
-	{
-		title: 'Payments',
-		href: payments.index().url,
-	},
-];
+onMounted(() => {
+	// Update filters from url query params (sample)
+	// let params = new URLSearchParams(location.search)
+	// console.log(Array.from(params.entries()), params.get('amount[1]'));
+	// Date range filter
+	// if (params.get('created_at[0]') && params.get('created_at[1]')) {
+	// 	let d0 = new Date(params.get('created_at[0]') as string)
+	// 	let d1 = new Date(params.get('created_at[1]') as string)
+	// 	fdate.value = new CalendarDate(d0.getFullYear(), d0.getMonth() + 1, d0.getDate())
+	// 	tdate.value = new CalendarDate(d1.getFullYear(), d1.getMonth() + 1, d1.getDate())
+	// 	columnFilters.value.push({
+	// 		id: "created_at",
+	// 		value: [fdate.value.toString(), tdate.value.toString()]
+	// 	})
+	// 	// Run only once after all filter props update
+	// 	table.getColumn('created_at')?.setFilterValue(created_at);
+	// }
+})
 </script>
 
 <template>
@@ -226,13 +215,14 @@ const breadcrumbs: BreadcrumbItem[] = [
 		<div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
 			<div class="relative min-h-screen flex-1 rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border">
 				<div class="h-full flex-1 flex-col gap-6 p-5 md:flex">
-					<div class="rounded-md border mb-4 p-4" v-if="sorting">{{ sorting }} {{ rowSelection }} {{ columnFilters }} {{ props.filter_errors }}</div>
+					<!-- <div class="rounded-md border mb-4 p-4" v-if="sorting">{{ sorting }} {{ rowSelection }} {{ columnFilters }} {{ props.filter_errors }}</div> -->
 					<div>
 						<div class="flex items-center justify-between gap-2">
 							<div class="flex flex-col gap-1">
 								<h2 class="text-2xl font-semibold tracking-tight">Payments</h2>
 								<p class="text-muted-foreground">Here's a list of your payments for this month.</p>
 							</div>
+
 							<div class="flex items-center gap-2">
 								<Link href="/payments">
 									<Button class="inline-flex cursor-pointer items-center justify-center gap-2" variant="outline"> <PlusCircle /> Create </Button>
@@ -313,7 +303,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 						</div>
 
 						<div class="w-full">
-							<div class="text-xs">Price range ($<span class="font-medium tabular-nums">{{ amount[0] }}</span> - <span class="font-medium tabular-nums">{{ amount[1] }}</span>).</div>
+							<div class="text-xs">Price range (<span class="font-medium tabular-nums">{{ amount[0] }}</span> - <span class="font-medium tabular-nums">{{ amount[1] }}</span>).</div>
 							<Slider
 								v-model="amount"
 								@update:model-value="table.getColumn('amount')?.setFilterValue($event)"

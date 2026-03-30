@@ -89,11 +89,6 @@ const props = defineProps<{
 					<ChevronLeft class="h-4 w-4" />
 				</Button>
 
-				<!-- <PaginationPrevious
-					:disabled="!table.getCanPreviousPage()"
-					@click="table.previousPage()"
-				/> -->
-
 				<template v-for="(item, index) in items" :key="index">
 					<PaginationItem
 						v-if="item.type === 'page'"
@@ -106,12 +101,6 @@ const props = defineProps<{
 					</PaginationItem>
 					<PaginationEllipsis v-else :index="index"/>
 				</template>
-
-
-				<!-- <PaginationNext
-					:disabled="!table.getCanNextPage()"
-					@click="table.nextPage()"
-				/> -->
 
 				<Button
 					variant="outline"
