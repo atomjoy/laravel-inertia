@@ -24,7 +24,7 @@ Route::get('users', function () {
 
 Route::resource('payments', PaymentController::class);
 
-// Display images
+// Display images from storage
 require __DIR__ . '/images.php';
 
 // Settings
