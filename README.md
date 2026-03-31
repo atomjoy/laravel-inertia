@@ -72,6 +72,25 @@ git push origin --tags
 git push origin <tagname>
 ```
 
+### Php.ini
+
+```sh
+;Allow cache headers from laravel 'Cache-Control: public, max-age=3600'
+;session.cache_limiter=nocache
+session.cache_limiter=
+
+[opcache]
+;Disable php 8.5 errors xampp
+;zend_extension=opcache
+
+; Config cache
+opcache.enable=1
+opcache.enable_cli=1
+opcache.memory_consumption=128
+opcache.interned_strings_buffer=8
+opcache.max_accelerated_files=10000
+```
+
 ### Display images
 
 ```php
