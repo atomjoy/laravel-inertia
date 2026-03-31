@@ -72,10 +72,29 @@ git push origin --tags
 git push origin <tagname>
 ```
 
-### Php.ini
+### Config php.ini for xampp
 
 ```ini
-;Allow cache headers from laravel 'Cache-Control: public, max-age=3600'
+; On windows:
+;extension_dir="C:\xampp\php\ext"
+extension_dir="ext"
+
+; Enable extensions
+extension=bz2
+extension=curl
+extension=fileinfo
+extension=gd
+extension=gettext
+extension=intl
+extension=mbstring
+extension=exif      ; Must be after mbstring as it depends on it
+extension=mysqli
+extension=openssl
+extension=pdo_mysql
+extension=pdo_pgsql
+extension=pdo_sqlite
+
+;Allow cache header from laravel 'Cache-Control: public, max-age=3600'
 ;session.cache_limiter=nocache
 session.cache_limiter=
 
@@ -89,6 +108,12 @@ opcache.enable_cli=1
 opcache.memory_consumption=128
 opcache.interned_strings_buffer=8
 opcache.max_accelerated_files=10000
+
+[curl]
+curl.cainfo="C:\xampp\apache\bin\curl-ca-bundle.crt"
+
+[openssl]
+openssl.cafile="C:\xampp\apache\bin\curl-ca-bundle.crt"
 ```
 
 ### Display images
