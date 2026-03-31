@@ -74,7 +74,7 @@ git push origin <tagname>
 
 ### Php.ini
 
-```sh
+```ini
 ;Allow cache headers from laravel 'Cache-Control: public, max-age=3600'
 ;session.cache_limiter=nocache
 session.cache_limiter=
