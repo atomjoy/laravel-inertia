@@ -15,7 +15,7 @@ class UserController extends Controller
 			'users' => User::paginate(5),
 			// 'users' => User::query()->paginate()->transform(function ($user) {
 			//  $user->additional([]);
-			// 	$user['can'] = ['update_user' => Auth::user()->can('update', $i)];
+			// 	$user['can'] = ['update_user' => Auth::user()->can('update', $user)];
 			// 	return UserResource::make($user);
 			// }),
 			// 'users' => User::all()->map(fn($user) => [
