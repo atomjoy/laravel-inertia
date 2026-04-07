@@ -13,11 +13,16 @@ class UserController extends Controller
 	{
 		return Inertia::render('Users/Index', [
 			'users' => User::paginate(5),
+			// 'users' => User::query()->paginate()->transform(function ($user) {
+			//  $user->additional([]);
+			// 	$user['can'] = ['update_user' => Auth::user()->can('update', $i)];
+			// 	return UserResource::make($user);
+			// }),
 			// 'users' => User::all()->map(fn($user) => [
 			//     'id' => $user->id,
 			//     'name' => $user->name,
 			//     'email' => $user->email,
-			//     // 'edit_url' => route('users.edit', $user),
+			//     // 'update_url' => route('users.update', $user),
 			// ]),
 			// 'create_url' => route('users.create'),
 			// 'json' => new JsonResponse(['key' => 'value']),

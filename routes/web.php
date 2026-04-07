@@ -1,9 +1,7 @@
 <?php
 
 use App\Http\Controllers\PaymentController;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
 
@@ -24,8 +22,8 @@ Route::get('users', function () {
 
 Route::resource('payments', PaymentController::class);
 
-// Display images from storage
-require __DIR__ . '/images.php';
+// Display files, images from storage
+require __DIR__ . '/media.php';
 
 // Settings
 require __DIR__ . '/settings.php';

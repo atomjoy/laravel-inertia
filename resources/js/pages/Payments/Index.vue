@@ -44,6 +44,7 @@ const props = defineProps({
 	filter: Object,
 	filter_errors: Object,
 	sort: Object,
+	// errors: Object,
 });
 
 const filter_toolbar = [filter_status];
