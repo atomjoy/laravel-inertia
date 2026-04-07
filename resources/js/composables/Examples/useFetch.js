@@ -27,3 +27,19 @@ export default function useFetch(url) {
 		fetchData,
 	}
 }
+
+/*
+// Re-fetch when ref cheanges
+const url = ref('/initial-url')
+const { data, error } = useFetch(url)
+
+// Re-fetch when props.id changes
+const { data, error } = useFetch(() => `/posts/${props.id}`)
+
+watch(error, (newValue) => {
+	if (newValue) {
+		// UI logic in component
+		showToast("An error occurred.");
+	}
+});
+*/
