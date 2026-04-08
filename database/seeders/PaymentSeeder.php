@@ -50,7 +50,7 @@ class PaymentSeeder extends Seeder
 			'created_at' => fake()->dateTimeThisYear(),
 		]);
 
-		for ($i = 0; $i < 100; $i++) {
+		for ($i = 0; $i < 500; $i++) {
 			Payment::factory()->create([
 				'status' => $status[rand(0, 4)],
 				'amount' => rand(40, 6000),
