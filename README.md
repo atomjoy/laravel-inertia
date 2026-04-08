@@ -13,6 +13,16 @@ php artisan migrate:fresh --seed
 php artisan serve
 ```
 
+## Login seeder
+
+```sh
+admin@example.com
+password
+
+test@example.com
+password
+```
+
 ## Examples
 
 ```sh

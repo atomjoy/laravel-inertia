@@ -17,14 +17,12 @@ Route::get('dashboard', function () {
 
 Route::get('users', function () {
 	return Inertia::render('Users');
-	// })->middleware(['auth', 'verified'])->name('users');
-})->name('users');
-
-Route::resource('payments', PaymentController::class);
+})->middleware(['auth', 'verified'])->name('users');
 
 // Admin panel
 Route::group(['middleware' => ['auth', 'verified', 'role:admin|superadmin']], function () {
 	// Admin routes
+	Route::resource('payments', PaymentController::class);
 });
 
 // Display files, images from storage
