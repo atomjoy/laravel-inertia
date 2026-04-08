@@ -46,8 +46,8 @@ class HandleInertiaRequests extends Middleware
 			'auth' => [
 				// With casts and relation if loaded
 				// 'user' => $request->user(),
-				// Limit relations data (does not casts datetime:Y-m-d H:i:s here)
-				'user' => $request->user()?->only(['id', 'name', 'email']),
+				// Limit relations data (does not casts datetime:Y-m-d H:i:s here), must create formated attribute
+				'user' => $request->user()?->only(['id', 'name', 'email', 'created_at', 'formated_created_at']),
 				// Always refresh relations with casts
 				// 'user' => $request->user()?->fresh(['roles', 'permissions']),
 				// With Spatie roles and permissions
