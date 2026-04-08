@@ -41,6 +41,5 @@ class DatabaseSeeder extends Seeder
 			'email' => 'test@example.com',
 		]);
 		$user->givePermissionTo('profil_update');
-		$user->givePermissionTo('account_delete');
 	}
 }

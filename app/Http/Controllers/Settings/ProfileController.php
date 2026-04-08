@@ -52,9 +52,7 @@ class ProfileController extends Controller
 		$user = $request->user();
 
 		// Disable super and admin account delete
-		if (
-			$user->isSuperAdmin() || $user->isAdmin() || !$user->can('account_delete')
-		) {
+		if ($user->isSuperAdmin() || $user->isAdmin()) {
 			return to_route('profile.edit');
 		} else {
 			Auth::logout();

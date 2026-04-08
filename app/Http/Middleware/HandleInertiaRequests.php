@@ -45,9 +45,9 @@ class HandleInertiaRequests extends Middleware
 			'quote' => ['message' => trim($message), 'author' => trim($author)],
 			'auth' => [
 				// With casts and relation if loaded
-				// 'user' => $request->user(),
-				// Limit relations data (does not casts datetime:Y-m-d H:i:s here), must create formated attribute
-				'user' => $request->user()?->only(['id', 'name', 'email', 'created_at', 'formated_created_at']),
+				'user' => $request->user(),
+				// Limit relations data (does not casts datetime:Y-m-d H:i:s here), must create attribute in model
+				// 'user' => $request->user()?->only(['id', 'name', 'email', 'formated_created_at']),
 				// Always refresh relations with casts
 				// 'user' => $request->user()?->fresh(['roles', 'permissions']),
 				// With Spatie roles and permissions
@@ -58,7 +58,6 @@ class HandleInertiaRequests extends Middleware
 				],
 				'permission' => [
 					'profil_update' => $request->user()?->can('profil_update'),
-					'account_delete' => $request->user()?->can('account_delete'),
 				],
 				'roles' => $request->user()?->allRoles(),
 				'permissions' => $request->user()?->allPermissions(),
