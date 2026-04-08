@@ -17,14 +17,18 @@ import { Link } from '@inertiajs/vue3';
 import { BookOpen, Folder, LayoutGrid, Users, Coins } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 import payments from '@/routes/payments';
+import NavMainAdmin from '@/components/NavMainAdmin.vue';
 
 const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
         href: dashboard(),
         icon: LayoutGrid,
-    },
-    {
+    }
+];
+
+const adminNavItems: NavItem[] = [
+	{
         title: 'Users',
         href: users(),
         icon: Users,
@@ -32,8 +36,8 @@ const mainNavItems: NavItem[] = [
     {
         title: 'Payments',
 		href: payments.index(),
-        icon: Coins,
-    }
+		icon: Coins,
+    },
 ];
 
 const footerNavItems: NavItem[] = [
@@ -66,6 +70,7 @@ const footerNavItems: NavItem[] = [
 
         <SidebarContent>
             <NavMain :items="mainNavItems" />
+            <NavMainAdmin :items="adminNavItems" v-if="$page.props.auth?.role.admin" />
         </SidebarContent>
 
         <SidebarFooter>

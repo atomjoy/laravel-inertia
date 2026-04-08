@@ -15,13 +15,14 @@ Route::get('dashboard', function () {
 	return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('users', function () {
-	return Inertia::render('Users');
-})->middleware(['auth', 'verified'])->name('users');
 
 // Admin panel
 Route::group(['middleware' => ['auth', 'verified', 'role:admin|superadmin']], function () {
 	// Admin routes
+	Route::get('users', function () {
+		return Inertia::render('Users');
+	})->name('users');
+
 	Route::resource('payments', PaymentController::class);
 });
 
