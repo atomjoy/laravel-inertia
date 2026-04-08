@@ -9,6 +9,7 @@ with filters search, amount, status, orderby and sorting with slider.
 npm install
 npm run build
 composer update
+php artisan config:clear
 php artisan migrate:fresh --seed
 php artisan serve
 ```

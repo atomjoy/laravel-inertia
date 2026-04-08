@@ -20,7 +20,7 @@ class SpatieSeeder extends Seeder
 		$writer = Role::create(['name' => 'writer']);
 
 		// Permissions
-		$update_profil = Permission::create(['name' => 'update_profil']);
-		$delete_account = Permission::create(['name' => 'delete_account']);
+		$update_profil = Permission::create(['name' => 'profil_update']);
+		$delete_account = Permission::create(['name' => 'account_delete']);
 	}
 }

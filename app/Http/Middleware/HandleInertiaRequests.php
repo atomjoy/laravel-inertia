@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
@@ -43,21 +44,23 @@ class HandleInertiaRequests extends Middleware
 			'name' => config('app.name'),
 			'quote' => ['message' => trim($message), 'author' => trim($author)],
 			'auth' => [
+				// With casts and relation if loaded
 				// 'user' => $request->user(),
-				// Refresh roles
-				'user' => $request->user()?->fresh(['roles', 'permissions']),
+				// Limit relations data (does not casts datetime:Y-m-d H:i:s here)
+				'user' => $request->user()?->only(['id', 'name', 'email']),
+				// Always refresh relations with casts
+				// 'user' => $request->user()?->fresh(['roles', 'permissions']),
 				// With Spatie roles and permissions
 				'role' => [
 					'admin' => $request->user()?->isAdmin(),
 					'writer' => $request->user()?->isWriter(),
 				],
+				'permission' => [
+					'account_delete' => $request->user()?->can('account_delete'),
+					'profil_update' => $request->user()?->can('profil_update'),
+				],
 				'roles' => $request->user()?->allRoles(),
 				'permissions' => $request->user()?->allPermissions(),
-				// 'permission' => [
-				// 	'post' => [
-				// 		'create' => $request->user()->can('create', Post::class),
-				// 	],
-				// ],
 			],
 			'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
 		];
