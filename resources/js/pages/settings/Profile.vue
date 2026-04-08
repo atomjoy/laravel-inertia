@@ -127,7 +127,9 @@ const user = page.props.auth.user ?? '';
 			<div
 				v-if="$page.props.auth?.role.admin || $page.props.auth?.role.superadmin"
 				class="text-base text-red-600 font-medium space-y-4 rounded-lg border border-red-100 bg-red-50 p-4 dark:border-red-200/10 dark:bg-red-700/10"
-			>The user cannot delete the account.</div>
+			>
+				The user cannot delete the account.
+			</div>
             <DeleteUser v-else />
         </SettingsLayout>
     </AppLayout>
