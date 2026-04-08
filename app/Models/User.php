@@ -60,6 +60,11 @@ class User extends Authenticatable
 		return $this->hasRole('admin');
 	}
 
+	function isSuperAdmin()
+	{
+		return $this->hasRole('superadmin');
+	}
+
 	function isWriter()
 	{
 		return $this->hasRole('writer');

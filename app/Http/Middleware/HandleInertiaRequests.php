@@ -52,12 +52,13 @@ class HandleInertiaRequests extends Middleware
 				// 'user' => $request->user()?->fresh(['roles', 'permissions']),
 				// With Spatie roles and permissions
 				'role' => [
+					'superadmin' => $request->user()?->isSuperAdmin(),
 					'admin' => $request->user()?->isAdmin(),
 					'writer' => $request->user()?->isWriter(),
 				],
 				'permission' => [
-					'account_delete' => $request->user()?->can('account_delete'),
 					'profil_update' => $request->user()?->can('profil_update'),
+					'account_delete' => $request->user()?->can('account_delete'),
 				],
 				'roles' => $request->user()?->allRoles(),
 				'permissions' => $request->user()?->allPermissions(),

@@ -17,6 +17,9 @@ php artisan serve
 ## Login seeder
 
 ```sh
+super@example.com
+password
+
 admin@example.com
 password
 

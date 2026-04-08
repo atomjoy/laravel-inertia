@@ -21,6 +21,6 @@ class SpatieSeeder extends Seeder
 
 		// Permissions
 		$update_profil = Permission::create(['name' => 'profil_update']);
-		$delete_account = Permission::create(['name' => 'account_delete']);
+		$account_delete = Permission::create(['name' => 'account_delete']);
 	}
 }
