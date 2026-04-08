@@ -43,11 +43,17 @@ class HandleInertiaRequests extends Middleware
 			'name' => config('app.name'),
 			'quote' => ['message' => trim($message), 'author' => trim($author)],
 			'auth' => [
-				'user' => $request->user(),
-				// 'roles' => [
-				// 	'admin' => $request->user()->isAdmin(),
-				// ],
-				// 'permissions' => [
+				// 'user' => $request->user(),
+				// Refresh roles
+				'user' => $request->user()?->fresh(['roles', 'permissions']),
+				// With Spatie roles and permissions
+				'role' => [
+					'admin' => $request->user()?->isAdmin(),
+					'writer' => $request->user()?->isWriter(),
+				],
+				'roles' => $request->user()?->allRoles(),
+				'permissions' => $request->user()?->allPermissions(),
+				// 'permission' => [
 				// 	'post' => [
 				// 		'create' => $request->user()->can('create', Post::class),
 				// 	],

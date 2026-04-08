@@ -22,6 +22,11 @@ Route::get('users', function () {
 
 Route::resource('payments', PaymentController::class);
 
+// Admin panel
+Route::group(['middleware' => ['auth', 'verified', 'role:admin|superadmin']], function () {
+	// Admin routes
+});
+
 // Display files, images from storage
 require __DIR__ . '/media.php';
 
