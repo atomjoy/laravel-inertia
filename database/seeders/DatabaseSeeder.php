@@ -23,7 +23,9 @@ class DatabaseSeeder extends Seeder
 			'name' => 'Test User',
 			'email' => 'test@example.com',
 		]);
+
 		$user->givePermissionTo('update_profil');
+
 		$user->givePermissionTo('delete_account');
 
 		// Admin User
@@ -31,7 +33,9 @@ class DatabaseSeeder extends Seeder
 			'name' => 'Admin User',
 			'email' => 'admin@example.com',
 		]);
+
 		$user->assignRole('admin', 'writer');
+
 		$user->givePermissionTo('update_profil');
 	}
 }
