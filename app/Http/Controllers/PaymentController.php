@@ -102,7 +102,7 @@ class PaymentController extends Controller
 				'filter_errors' => $validator->fails() ? $validator->errors() : null,
 			], 200);
 		} else {
-			return Inertia::render('Payments/Index', [
+			return Inertia::render('admin/payments/Index', [
 				'data' => $payload,
 				'amount_max' => $amount_max ?? 10000,
 				'filter' => $filters,

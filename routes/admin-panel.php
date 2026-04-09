@@ -12,7 +12,7 @@ Route::group([
 ], function () {
 
 	Route::get('users', function () {
-		return Inertia::render('Users');
+		return Inertia::render('admin/users/Index');
 	})->name('users');
 
 	Route::resource('payments', PaymentController::class);

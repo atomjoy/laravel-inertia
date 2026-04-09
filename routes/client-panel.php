@@ -1,7 +1,5 @@
 <?php
 
-// use App\Http\Controllers\ClientOrdersController;
-// use App\Http\Controllers\ClientPaymentsController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -11,9 +9,10 @@ Route::group([
 ], function () {
 
 	Route::get('dashboard', function () {
-		return Inertia::render('Dashboard');
+		return Inertia::render('client/Dashboard');
 	})->name('dashboard');
 
-	// Route::resource('orders', ClientOrdersController::class);
-	// Route::resource('payments', ClientPaymentsController::class);
+	Route::get('orders', function () {
+		return Inertia::render('client/Orders');
+	})->name('orders');
 });

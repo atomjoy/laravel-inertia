@@ -225,7 +225,7 @@ onMounted(() => {
 							</div>
 
 							<div class="flex items-center gap-2">
-								<Link href="/payments">
+								<Link href="/payments/create">
 									<Button class="inline-flex cursor-pointer items-center justify-center gap-2" variant="outline"> <PlusCircle /> Create </Button>
 								</Link>
 
