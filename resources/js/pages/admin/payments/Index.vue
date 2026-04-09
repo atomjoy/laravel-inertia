@@ -215,32 +215,31 @@ onMounted(() => {
 	<AppLayout :breadcrumbs="breadcrumbs">
 		<div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
 			<div class="relative min-h-screen flex-1 rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border">
-				<div class="h-full flex-1 flex-col gap-6 p-5 md:flex">
+				<div class="h-full flex flex-col gap-8 p-5 md:flex">
 					<!-- <div class="rounded-md border mb-4 p-4" v-if="sorting">{{ sorting }} {{ rowSelection }} {{ columnFilters }} {{ props.filter_errors }}</div> -->
-					<div>
-						<div class="flex items-center justify-between gap-2">
-							<div class="flex flex-col gap-1">
-								<h2 class="text-2xl font-semibold tracking-tight">Payments</h2>
-								<p class="text-muted-foreground">Here's a list of your payments for this month.</p>
-							</div>
 
-							<div class="flex items-center gap-2">
-								<Link href="/payments/create">
-									<Button class="inline-flex cursor-pointer items-center justify-center gap-2" variant="outline"> <PlusCircle /> Create </Button>
-								</Link>
-
-								<span data-slot="avatar" class="relative flex size-8 shrink-0 overflow-hidden rounded-full h-9 w-9">
-									<img role="img" src="/default/avatar.webp" data-slot="avatar-image" class="aspect-square size-full" alt="Image">
-								</span>
-							</div>
+					<div class="flex items-center justify-between gap-2">
+						<div class="flex flex-col gap-1">
+							<h2 class="text-2xl font-semibold tracking-tight">Payments</h2>
+							<p class="text-muted-foreground">Here's a list of your payments for this month.</p>
 						</div>
 
-						<div class="filter-errors">
-							<div class="filter-error py-1 text-sm text-red-400" v-for="err in props.filter_errors">{{ err[0] }}</div>
+						<div class="flex items-center gap-2">
+							<Link href="/payments/create">
+								<Button class="inline-flex cursor-pointer items-center justify-center gap-2" variant="outline"> <PlusCircle /> Create </Button>
+							</Link>
+
+							<span data-slot="avatar" class="relative flex size-8 shrink-0 overflow-hidden rounded-full h-9 w-9">
+								<img role="img" src="/default/avatar.webp" data-slot="avatar-image" class="aspect-square size-full" alt="Image">
+							</span>
 						</div>
 					</div>
 
-					<div class="w-full flex flex-col my-2 lg:flex-row gap-2">
+					<div class="filter-errors" v-if="props.filter_errors?.length > 0">
+						<div class="filter-error py-1 text-sm text-red-400" v-for="err in props.filter_errors">{{ err[0] }}</div>
+					</div>
+
+					<div class="w-full flex flex-col flex-wrap lg:flex-row gap-2">
 						<div class="date-box flex">
 							<Popover v-slot="{ close }">
 								<PopoverTrigger as-child>
@@ -303,15 +302,15 @@ onMounted(() => {
 							</div>
 						</div>
 
-						<div class="w-full">
-							<div class="text-xs">Price range (<span class="font-medium tabular-nums">{{ amount[0] }}</span> - <span class="font-medium tabular-nums">{{ amount[1] }}</span>).</div>
+						<div class="w-auto">
+							<div class="text-xs">Price range (<span class="font-medium tabular-nums">{{ parseFloat(amount[0]).toFixed(2) }}</span> - <span class="font-medium tabular-nums">{{ parseFloat(amount[1]).toFixed(2) }}</span>).</div>
 							<Slider
 								v-model="amount"
 								@update:model-value="table.getColumn('amount')?.setFilterValue($event)"
 								:min="0"
 								:max="amount_max"
 								:step="0.5"
-								class="mt-2 w-full mb-4"
+								class="mt-2 mb-4 w-full"
 								aria-label="Price Range"
 							/>
 						</div>

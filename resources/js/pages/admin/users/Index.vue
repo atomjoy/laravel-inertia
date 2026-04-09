@@ -41,12 +41,14 @@ onMounted(async () => {
 	<AppLayout :breadcrumbs="breadcrumbs">
 		<div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
 			<div class="relative min-h-screen flex-1 rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border">
-				<div class="h-full flex-1 flex-col gap-8 p-5 md:flex">
+				<div class="h-full flex flex-col gap-8 p-5 md:flex">
+
 					<div class="flex items-center justify-between gap-2">
 						<div class="flex flex-col gap-1">
 							<h2 class="text-2xl font-semibold tracking-tight">Payments</h2>
 							<p class="text-muted-foreground">Here's a list of your payments for this month.</p>
 						</div>
+
 						<div class="flex items-center gap-2">
 							<Link href="/payments">
 								<Button class="inline-flex cursor-pointer items-center justify-center gap-2" variant="outline"> <PlusCircle /> Create </Button>
